@@ -26,6 +26,9 @@ An interactive planner/calendar with these features:
 * On the planner page there will be a calender.
 * To the right of it is the hamburger menu.
 * Also stores effective study plans if students desire
+* Hamburger menu will look something like the following: 
+  * ![img_2.png](img_2.png)
+  note that it will be colourcoded
 
 #### Calendar.java
 * This will have all the dates, weekdays, month and year.
