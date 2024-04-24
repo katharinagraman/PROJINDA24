@@ -19,12 +19,6 @@ public class CommandParser {
         // Attempt to match the player input to a command and execute it
         switch (splitCommand[0]) {
             case "go" -> executeGoCommand(splitCommand, state);
-            case "välj" -> executePickCommand(splitCommand, state);
-            case "svar" -> executeTakeLianCommand(splitCommand, state);
-            case "look" -> executeLookCommand(state);
-            case "help" -> printHelpMessage();
-            case "end" -> executeExitCommand();
-            case "restart" -> executeRestartCommand(splitCommand, state);
             default -> printInvalidCommandMessage();
         }
     }
@@ -39,12 +33,12 @@ public class CommandParser {
         if (splitCommand.length < 2) {
             printMissingModifierMessage("go");
         } else {
-            // Attempt to leave the current room in the given direction
+
             Page current = state.getCurrentPage();
-            Page newRoom = current.goToPage(splitCommand[1]);
+            Page nextPage = current.goToPage(splitCommand[1]);
 
             if(current)
-
+        }
     }
 
     /**

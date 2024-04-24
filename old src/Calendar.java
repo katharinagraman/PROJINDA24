@@ -2,11 +2,13 @@ import java.time.LocalTime;
 import java.time.Month;
 import java.time.LocalDate;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 
 public class Calendar {
+
 
     LocalDate date;
 
@@ -17,22 +19,39 @@ public class Calendar {
     Month month;
 
     List<LocalDate> daysOfMonth;
+    private Map <Year, Month> yearMonthMap;
+
+    private ArrayList<Integer> year = new ArrayList<>();
 
 
-    Map<Integer, Integer> monthToDayLength;
+    private Map<Integer, Integer> monthToDayLength;
+
+    private int[][] monthMatrice = new int[7][4];
 
 
 
     public Calendar() {
+        createMonthLength();
+        //this.year = LocalDate.now().getYear();
         this.month = LocalDate.now().getMonth();
         this.date = LocalDate.now();
-        this.monthToDayLength = createMonthLength();
+
+    }
+
+    public void createCalendar(){
+
+
+
+    }
+
+    public void createMontlyCalendar(int num){
+
     }
 
     /*
     Kanske ha denna i planner ist
      */
-    public Map<Integer, Integer> createMonthLength(){
+    public void createMonthLength(){
         monthToDayLength.put(1, 31);
         monthToDayLength.put(3, 31);
         monthToDayLength.put(4, 30);
@@ -50,13 +69,25 @@ public class Calendar {
             monthToDayLength.put(2, 28);
         }
 
+
     }
 
     public int lengthOfMonth(int monthNum){
+        return monthToDayLength.get(monthNum);
+    }
+
+
+    public void print(){
+        System.out.println(this.month);
+        for(int row = 0; row < monthMatrice.length; row++){
+            for (int col = 0; col < monthMatrice[row].length; col++){
+                System.out.print(monthMatrice[row][col]);
+            }
+        }
+
 
 
     }
-
 
 
 
