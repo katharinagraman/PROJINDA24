@@ -1,4 +1,3 @@
-
 public class DailyEvent {
     /**
      * Class keeping track of daily events
@@ -23,6 +22,4 @@ public class DailyEvent {
         this.titleOfEvent = titleOfEvent;
 
     }
-
 }
-
