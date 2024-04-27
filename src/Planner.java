@@ -1,9 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.GregorianCalendar;
-import java.util.Calendar;
+import java.util.*;
 
 public class Planner extends JFrame {
+
+    private Map<Date, ArrayList<DailyEvent>> EventsByDate = new HashMap<>();
+
     /**
      * homePage where student starts
      * also displays a calendar
@@ -28,10 +30,7 @@ public class Planner extends JFrame {
         // Set the background color of the Planner frame to lavender
         getContentPane().setBackground(new Color(230, 230, 250));
 
-        // Create main content area
-        JLabel contentLabel = new JLabel("Main Content Area", SwingConstants.CENTER);
-        getContentPane().setLayout(new BorderLayout());
-        getContentPane().add(contentLabel, BorderLayout.CENTER);
+
 
         // Create side menu panel (initially hidden)
         sideMenuPanel = new JPanel();
@@ -68,23 +67,31 @@ public class Planner extends JFrame {
 
         // ------- Calendar -------- //
 
-        GregorianCalendar calendar = (GregorianCalendar) Calendar.getInstance();
-        calendarDates.setLayout(calendarLayout);
-        calendarDates.setBounds(10, 50, 500, 250);
-        chosenDay = calendar.get(GregorianCalendar.DAY_OF_MONTH); // Get chosen date
-        chosenMonth = calendar.get(GregorianCalendar.MONTH);    // Get chosen month
-        chosenYear = calendar.get(GregorianCalendar.YEAR);  // get chosen year
+        JPanel calendarPanel = new JPanel(new BorderLayout());
+        CalendarP calendarApp = new CalendarP();
+        calendarPanel.add(calendarApp.getCalendarPanel(), BorderLayout.CENTER);
 
-        // Match
-        currentDay = chosenDay;
-        currentMonth = chosenMonth;
-        currentYear = chosenYear;
+        getContentPane().add(calendarPanel, BorderLayout.WEST);
+        //CalendarApp calendar = new CalendarApp();
+        //getContentPane().add(calendar);
 
-
-                //labels
-        labelYear = new JLabel("");
-        labelMonth = new JLabel("");
-        labelYear.setBounds(180, 25, 100, 25);
+//        GregorianCalendar calendar = (GregorianCalendar) Calendar.getInstance();
+//        calendarDates.setLayout(calendarLayout);
+//        calendarDates.setBounds(10, 50, 500, 250);
+//        chosenDay = calendar.get(GregorianCalendar.DAY_OF_MONTH); // Get chosen date
+//        chosenMonth = calendar.get(GregorianCalendar.MONTH);    // Get chosen month
+//        chosenYear = calendar.get(GregorianCalendar.YEAR);  // get chosen year
+//
+//        // Match
+//        currentDay = chosenDay;
+//        currentMonth = chosenMonth;
+//        currentYear = chosenYear;
+//
+//
+//                //labels
+//        labelYear = new JLabel("");
+//        labelMonth = new JLabel("");
+//        labelYear.setBounds(180, 25, 100, 25);
 
 
 
