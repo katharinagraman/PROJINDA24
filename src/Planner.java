@@ -1,12 +1,24 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.GregorianCalendar;
+import java.util.Calendar;
 
 public class Planner extends JFrame {
+    /**
+     * homePage where student starts
+     * also displays a calendar
+     */
     private JPanel sideMenuPanel;
     private JButton hamburgerButton;
 
+    private int chosenYear, chosenMonth, chosenDay, currentYear, currentMonth, currentDay;
+
+    private JButton calendarDates;
+
     private JLabel labelMonth, labelYear;
     private JLabel title = new JLabel("My Planner");
+
+    private GridLayout calendarLayout = new GridLayout(6, 7);
 
     public Planner() {
         setTitle("My Planner");
@@ -53,11 +65,39 @@ public class Planner extends JFrame {
 
         // Add side menu panel to the EAST position
         getContentPane().add(sideMenuPanel, BorderLayout.EAST);
+
+        // ------- Calendar -------- //
+
+        GregorianCalendar calendar = (GregorianCalendar) Calendar.getInstance();
+        calendarDates.setLayout(calendarLayout);
+        calendarDates.setBounds(10, 50, 500, 250);
+        chosenDay = calendar.get(GregorianCalendar.DAY_OF_MONTH); // Get chosen date
+        chosenMonth = calendar.get(GregorianCalendar.MONTH);    // Get chosen month
+        chosenYear = calendar.get(GregorianCalendar.YEAR);  // get chosen year
+
+        // Match
+        currentDay = chosenDay;
+        currentMonth = chosenMonth;
+        currentYear = chosenYear;
+
+
+                //labels
+        labelYear = new JLabel("");
+        labelMonth = new JLabel("");
+        labelYear.setBounds(180, 25, 100, 25);
+
+
+
+
     }
 
     private void toggleSideMenu() {
         sideMenuPanel.setVisible(!sideMenuPanel.isVisible());
     }
+
+
+
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
