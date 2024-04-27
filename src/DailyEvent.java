@@ -1,3 +1,4 @@
+
 public class DailyEvent {
     /**
      * Class keeping track of daily events
@@ -20,17 +21,8 @@ public class DailyEvent {
      */
     public DailyEvent(String titleOfEvent, String date, String startTime, String endTime) {
         this.titleOfEvent = titleOfEvent;
-        this.dateEvent = date;
 
-        String[] d = date.split("/");
-        this.month = Integer.parseInt(d[0]);
-        System.out.println(d[1]);
-        this.day = Integer.parseInt(d[1]);
-        this.year = Integer.parseInt(d[2]);
-
-        this.start = startTime;
-        this.end = endTime;
-        this.monthName = mnames[month - 1];
-        this.dayOfWeek = daysOfTheWeek[this.getDayOfTheWeekValue()];
     }
+
 }
+
