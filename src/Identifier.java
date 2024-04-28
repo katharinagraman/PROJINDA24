@@ -2,8 +2,13 @@ public class Identifier {
     private String task, event, chore, other;
     private String id;
 
+    public Identifier(String event){
+        setId(event);
 
-    private String getId(){
+    }
+
+
+    public String getId(){
         return id;
 
     }

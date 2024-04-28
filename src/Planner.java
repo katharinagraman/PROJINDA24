@@ -44,7 +44,7 @@ public class Planner extends JFrame {
         hamburgerButton.setPreferredSize(new Dimension(40, 40));
         hamburgerButton.addActionListener(e -> toggleSideMenu());
 
-        // Create title panel for layout
+        // Create title panel for layout här är nog den där fula ramen jag inte ens bad om högst upp
         JPanel titlePanel = new JPanel(new BorderLayout());
         titlePanel.setBackground(new Color(230, 230, 250)); // Set background color of title panel
         titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add padding to title panel
@@ -72,26 +72,6 @@ public class Planner extends JFrame {
         calendarPanel.add(calendarApp.getCalendarPanel(), BorderLayout.CENTER);
 
         getContentPane().add(calendarPanel, BorderLayout.WEST);
-        //CalendarApp calendar = new CalendarApp();
-        //getContentPane().add(calendar);
-
-//        GregorianCalendar calendar = (GregorianCalendar) Calendar.getInstance();
-//        calendarDates.setLayout(calendarLayout);
-//        calendarDates.setBounds(10, 50, 500, 250);
-//        chosenDay = calendar.get(GregorianCalendar.DAY_OF_MONTH); // Get chosen date
-//        chosenMonth = calendar.get(GregorianCalendar.MONTH);    // Get chosen month
-//        chosenYear = calendar.get(GregorianCalendar.YEAR);  // get chosen year
-//
-//        // Match
-//        currentDay = chosenDay;
-//        currentMonth = chosenMonth;
-//        currentYear = chosenYear;
-//
-//
-//                //labels
-//        labelYear = new JLabel("");
-//        labelMonth = new JLabel("");
-//        labelYear.setBounds(180, 25, 100, 25);
 
 
 

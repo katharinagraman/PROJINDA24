@@ -4,8 +4,8 @@ public class DailyEvent {
      * Each event has an identifier important for other feautures
      */
 
-    private Identifier type;
-    private String titleOfEvent
+    private String type;
+    private String titleOfEvent, startTime, endTime;
     private int month, day, year;
 
 
@@ -18,8 +18,25 @@ public class DailyEvent {
      * @param startTime
      * @param endTime
      */
-    public DailyEvent(String titleOfEvent, String date, String startTime, String endTime) {
+    public DailyEvent(String titleOfEvent, String id, String startTime, String endTime) {
         this.titleOfEvent = titleOfEvent;
+        this.type = id;
+        this.startTime = startTime;
+        this.endTime = endTime;
 
+
+    }
+
+    /**
+     * Returns the name the event user has chosen
+     * @return titleOfEvent
+     */
+    private String getTitleOfEvent(){
+        return titleOfEvent;
+
+    }
+
+    private String getDate(){
+        return startTime;
     }
 }
