@@ -22,40 +22,23 @@ public class Day extends JFrame implements EventListener {
 
     // Method to update the display with the tasks
     private void updateDisplay() {
-        // Clear the existing display
         centerPanel.removeAll();
-        //JPanel eventShowCasePanel = new JPanel(new GridBagLayout());
-        //eventShowCasePanel.setVisible(true);
-        GridBagConstraints gbc = new GridBagConstraints();
-        int taskx = 0;
-        int tasky = 0;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(5, 10, 5, 10);
 
-
+        // Set layout manager to BoxLayout.Y_AXIS
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 
         // Rebuild the display based on tasksThisDay
-        // For example, iterate through tasksThisDay and add JLabels for each task
         for (Map.Entry<LocalTime, DailyEvent> entry : tasksThisDay.entrySet()) {
-
             LocalTime time = entry.getKey();
             DailyEvent event = entry.getValue();
 
-            JLabel timeLabel = new JLabel(time.toString());
-            JLabel eventLabel = new JLabel(event.toString());
+            JLabel timeEventLabel = new JLabel(time.toString() +" "+ event.toString());
 
-            //JLabel taskLabel = new JLabel(time.toString() + " - " + event.toString());
-            centerPanel.add(timeLabel);
-            gbc.gridx = 1;
-            centerPanel.add(eventLabel);
-            gbc.gridy++;
+            // Add timeLabel and eventLabel to centerPanel
+            centerPanel.add(timeEventLabel);
 
-
-
-
-
+            // Add vertical spacing (adjust as needed)
+            centerPanel.add(Box.createVerticalStrut(10));
         }
 
         // Repaint the panel to reflect the changes
