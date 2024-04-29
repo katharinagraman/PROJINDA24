@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 public class Planner extends JFrame {
@@ -32,11 +34,14 @@ public class Planner extends JFrame {
 
 
 
+        // ----------
         // Create side menu panel (initially hidden)
         sideMenuPanel = new JPanel();
-        sideMenuPanel.setBackground(Color.LIGHT_GRAY);
+        sideMenuPanel.setBackground(Color.WHITE);
         sideMenuPanel.setPreferredSize(new Dimension(200, getHeight())); // Adjust width as needed
         sideMenuPanel.setVisible(false);
+
+
 
         // Create hamburger button
         hamburgerButton = new JButton("☰");
@@ -68,18 +73,47 @@ public class Planner extends JFrame {
         // ------- Calendar -------- //
 
         JPanel calendarPanel = new JPanel(new BorderLayout());
-        CalendarP calendarApp = new CalendarP();
-        calendarPanel.add(calendarApp.getCalendarPanel(), BorderLayout.CENTER);
+        CalendarP calendar = new CalendarP();
+        calendarPanel.add(calendar.getCalendarPanel(), BorderLayout.CENTER);
 
         getContentPane().add(calendarPanel, BorderLayout.WEST);
 
 
+        // ----Hamburger -------//
+        LocalDate today = LocalDate.now();
+        HashMap<LocalDate,Day> mapOfDayFrames = calendar.getMapOfDaysWithTasks();
+        Day todaysFrame = mapOfDayFrames.get(today);
 
+
+        if(todaysFrame!= null){
+            HashMap<LocalTime, DailyEvent> mapforDay = todaysFrame.getTasksThisDay();
+            String[] a = todaysFrame.arrayForHamburger();
+
+            // Simulate adding components to sideMenuPanel
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.anchor = GridBagConstraints.NORTH;
+            gbc.insets = new Insets(5, 10, 5, 10);
+
+            for (int i = 0; i < 10; i++) {
+                JLabel eventLabel = new JLabel(a[i]);
+                gbc.gridx = 0;
+                gbc.gridy = i;
+                sideMenuPanel.add(eventLabel, gbc);
+            }
+
+        }else{
+            JLabel noTasksToday = new JLabel("No Tasks Today :)");
+            sideMenuPanel.add(noTasksToday);
+        }
 
     }
 
+
+
     private void toggleSideMenu() {
         sideMenuPanel.setVisible(!sideMenuPanel.isVisible());
+        revalidate(); // Recalculate layout
+        repaint();    // Redraw components
     }
 
 
