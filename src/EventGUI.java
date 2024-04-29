@@ -86,8 +86,10 @@ public class EventGUI extends JFrame {
         gbc.gridy = 1;
         mainPanel.add(type, gbc);
         gbc.gridx = 1;
-        typeOfEvent = new JTextField(20); // Initialize text field
-        mainPanel.add(typeOfEvent, gbc);
+        String[] eventTypeOptions = {"Task", "Event", "Chore"};
+        JComboBox<String> typeComboBox = new JComboBox<>(eventTypeOptions);
+        mainPanel.add(typeComboBox, gbc);
+
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -103,6 +105,7 @@ public class EventGUI extends JFrame {
         gbc.gridx = 1;
         JTextArea description = new JTextArea(10,20);
         mainPanel.add(description, gbc);
+
 
 
 
