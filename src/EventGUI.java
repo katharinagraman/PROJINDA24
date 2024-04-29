@@ -19,6 +19,8 @@ public class EventGUI extends JFrame {
     private HashMap<LocalTime, DailyEvent> timeOfEvent;
     private JLabel title = new JLabel("Add Event");
     private JLabel nameOfEvent, type, start,end;
+    private JComboBox<String> typeComboBox;
+    private JTextArea description;
     private JButton addEventButton = new JButton("Add Event");
 
     private LocalTime userInputedTime;
@@ -87,7 +89,7 @@ public class EventGUI extends JFrame {
         mainPanel.add(type, gbc);
         gbc.gridx = 1;
         String[] eventTypeOptions = {"Task", "Event", "Chore"};
-        JComboBox<String> typeComboBox = new JComboBox<>(eventTypeOptions);
+        typeComboBox = new JComboBox<>(eventTypeOptions);
         mainPanel.add(typeComboBox, gbc);
 
 
@@ -103,7 +105,7 @@ public class EventGUI extends JFrame {
         JLabel descriptionOfEvent = new JLabel("Description: ");
         mainPanel.add(descriptionOfEvent, gbc);
         gbc.gridx = 1;
-        JTextArea description = new JTextArea(10,20);
+        description = new JTextArea(10,20);
         mainPanel.add(description, gbc);
 
 
@@ -129,7 +131,7 @@ public class EventGUI extends JFrame {
                  * Jag vill egentligen att allt ska nollstälals så man kan fortsätta till man är nöjd. Och när den stängs så stängs inte allt
                  * Bara det fönstret där man lägger till
                  */
-                if (!titleOfEvent.getText().isEmpty() && !typeOfEvent.getText().isEmpty() && !startAndEnd.getText().isEmpty()) {
+                if (!titleOfEvent.getText().isEmpty() && !startAndEnd.getText().isEmpty()) {
                     System.out.println("hej"); //printar så denna funkar men den printar alltid när jah trycker tyvärr
                     addEvent(day);
                     dispose();
@@ -152,9 +154,10 @@ public class EventGUI extends JFrame {
      */
     public void addEvent(EventListener day){
         String title = titleOfEvent.getText();
-        String type = typeOfEvent.getText();
+        String type = typeComboBox.getItemAt(typeComboBox.getSelectedIndex());
         String start = startAndEnd.getText();
-        DailyEvent newEvent = new DailyEvent(title, type, start,start);
+        String descriptionE = description.getText();
+        DailyEvent newEvent = new DailyEvent(title, type, start,start, descriptionE);
         // Parse the inputed start and end time
         // add to map
         LocalTime time = LocalTime.now();
@@ -166,7 +169,7 @@ public class EventGUI extends JFrame {
          */
 
         tasksThisDay.put(time, newEvent);
-        day.onEventAdded(title, type, start,start);
+        day.onEventAdded(title, type, start,start, descriptionE);
 
     }
 
