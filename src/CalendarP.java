@@ -1,15 +1,19 @@
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CalendarP {
 
+    HashMap<LocalDate, Day> mapOfDaysWithTasks = new HashMap<>();
+
     private JFrame mainFrame;
     private JPanel calendarPanel;
 
+    private HashMap<LocalDate,DailyEvent> taskThatDay = new HashMap<LocalDate, DailyEvent>();
 
     /**
      * eller så har jag en map och en getter i varje dag istället så tasks each day blir istället en
@@ -23,7 +27,7 @@ public class CalendarP {
         mainFrame.setSize(1000, 600);
 
         // Create the calendar panel
-        calendarPanel = new JPanel(new GridLayout(6, 7)); // Calendar grid (6 rows x 7 columns)
+        calendarPanel = new JPanel(new GridLayout(4, 7)); // Calendar grid (4 rows x 7 columns)
         calendarPanel.setSize(800,600);
         // Display the current month's calendar
         displayCalendar(LocalDate.now());
@@ -84,6 +88,12 @@ public class CalendarP {
 
     // method that actionlistener adapts, creates a new day fram
 
+    private boolean isThereAFrame(LocalDate date){
+        Day day = new Day(date);
+        return mapOfDaysWithTasks.containsKey(day);
+
+    }
+
     /**
      * Varje dag fram måste ha en vit panel där man kan skriva in grejer så i guess
      * en till action listener
@@ -91,38 +101,19 @@ public class CalendarP {
      * @param date
      */
     private void openDayFrame(LocalDate date) {
-        JFrame dayFrame = new JFrame("Day: " + date);
-        dayFrame.setSize(1920, 1080);
+        Day dayFrame = mapOfDaysWithTasks.get(date);
 
-        JPanel dayPanel = new Day();
-        JLabel dayLabel = new JLabel("Events for " + date);
-        dayLabel.setFont(new Font("Georgia", Font.BOLD, 32));
+        if (dayFrame == null) {
+            dayFrame = new Day(date);
+            mapOfDaysWithTasks.put(date, dayFrame);
+        }
 
-        dayFrame.add(dayPanel);
+        // Show or activate the dayFrame
         dayFrame.setVisible(true);
-
-        // add button
-        JButton addButton = new JButton("+");
-        addButton.setFont(new Font("Georgia", Font.BOLD, 20));
-        addButton.setPreferredSize(new Dimension(40, 40));
-        addButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClickedToAddEvent(java.awt.event.MouseEvent evt) {
-                // Open a new frame or perform an action when a day is clicked
-                addEvent(date);
-            }
-        });
-    }
-
-    /**
-     * Opens the taskframe where user can add tasks
-     * This logic is handled in EventGUI
-     * @param date
-     */
-    public void addEvent(LocalDate date){
-        JPanel taskFrame = new EventGUI(date);
-        taskFrame.add(tasksEachDay);
+        dayFrame.toFront(); // Bring the frame to the front (in case it was minimized or behind other windows)
 
     }
+
 
     public JPanel getCalendarPanel() {
         return calendarPanel;

@@ -12,9 +12,9 @@ public class Day extends JFrame implements EventListener {
     private HashMap<LocalTime,DailyEvent> tasksThisDay = new HashMap<LocalTime, DailyEvent>();
 
     @Override
-    public void onEventAdded(String title, String type, String startTime, String endTime) {
+    public void onEventAdded(String title, String type, String startTime, String endTime, String description) {
         // Create a new DailyEvent instance with the received data
-        DailyEvent event = new DailyEvent(title, type, startTime, endTime);
+        DailyEvent event = new DailyEvent(title, type, startTime, endTime, description);
         LocalTime time = LocalTime.now();
         tasksThisDay.put(time, event);
         updateDisplay(); // Method to update the display with the new task
