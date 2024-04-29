@@ -119,6 +119,10 @@ public class CalendarP {
         return calendarPanel;
     }
 
+    public HashMap<LocalDate, Day> getMapOfDaysWithTasks(){
+        return mapOfDaysWithTasks;
+    }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
