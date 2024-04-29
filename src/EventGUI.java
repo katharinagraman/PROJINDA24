@@ -1,12 +1,15 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalTime;
 import java.util.*;
 import java.time.LocalDate;
 
-public class EventGUI extends JPanel {
+public class EventGUI extends JFrame {
+    private EventListener eventListener;
     private LocalDate date;
 
     /**
@@ -32,136 +35,146 @@ public class EventGUI extends JPanel {
      * Den kommer att skicka data eller om jag använder getTask()
      *
      */
-    public EventGUI(LocalDate date){
-        this.date = date;
-        JLabel taskFrameLabel = new JLabel("Events for " + date);
-        taskFrame.setSize(1000,1000);
+
+
+    public EventGUI(EventListener day) {
+        this.eventListener = day;
+
+
+        // Initialize components
+        nameOfEvent = new JLabel("Event Name:");
+        type = new JLabel("Event Type:");
+        start = new JLabel("Start Time:");
+        end = new JLabel("End Time:");
+
+        // Set up taskFrame
+        taskFrame.setTitle("Events for " + date);
+        taskFrame.setSize(500, 500);
         taskFrame.setBackground(Color.WHITE);
-        taskFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        taskFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        /**
-         * action listener on button add!!! Men bara synlig om man fyllt vissa fält
-         */
-
-        addEventButton.setFont(new Font("Georgia", Font.BOLD, 20));
-        addEventButton.setPreferredSize(new Dimension(40, 40));
-        addEventButton.setVisible(false);
-        if(necessaryFieldsFilled()){
-
-        addEventButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClickedToAddEvent(java.awt.event.MouseEvent evt) {
-                // Open a new frame or perform an action when a day is clicked
-                addEvent(tasksThisDay, date);
-            }
-        });
-        }
-
-        //_---------------
-        // Create title panel for layout här är nog den där fula ramen jag inte ens bad om högst upp
+        // Set up title panel
         JPanel titlePanel = new JPanel(new BorderLayout());
-        titlePanel.setBackground(new Color(230, 230, 250)); // Set background color of title panel
-        titlePanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add padding to title panel
-
-        // Add title label to the title panel
+        titlePanel.setBackground(new Color(230, 230, 250));
         title.setFont(new Font("Georgia", Font.BOLD, 32));
         titlePanel.add(title, BorderLayout.WEST);
 
-        // Add hamburger button to the title panel (align right)
+        // Set up button panel
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(addEventButton);
         buttonPanel.setBackground(new Color(230, 230, 250));
         titlePanel.add(buttonPanel, BorderLayout.EAST);
 
-        // Add the title panel to the content pane at the NORTH position
+        // Add title panel to NORTH and button panel to EAST of taskFrame content pane
         taskFrame.getContentPane().add(titlePanel, BorderLayout.NORTH);
 
-        // Add side menu panel to the EAST position
-        taskFrame.getContentPane().add(titlePanel, BorderLayout.EAST);
-
-
-
-        //----- textfields to receive user input
-        titleOfEvent = new JTextField(100);
-        typeOfEvent = new JTextField(100);
-        startAndEnd = new JTextField(100);
-
-        titleOfEventPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        typeOfEventPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        startAndEndPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-
+        // Set up mainPanel with GridBagLayout
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.insets = new Insets(5, 10, 5, 10); // Padding
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = new Insets(5, 10, 5, 10);
 
+        // Add components to mainPanel using GridBagConstraints
         mainPanel.add(nameOfEvent, gbc);
         gbc.gridx = 1;
+        titleOfEvent = new JTextField(20); // Initialize text field
         mainPanel.add(titleOfEvent, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
         mainPanel.add(type, gbc);
         gbc.gridx = 1;
+        typeOfEvent = new JTextField(20); // Initialize text field
         mainPanel.add(typeOfEvent, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         mainPanel.add(start, gbc);
         gbc.gridx = 1;
-        mainPanel.add(end, gbc);
+        startAndEnd = new JTextField(20); // Initialize text field
+        mainPanel.add(startAndEnd, gbc);
 
+        gbc.gridx = 0;
+        gbc.gridy =3;
+        JLabel descriptionOfEvent = new JLabel("Description: ");
+        mainPanel.add(descriptionOfEvent, gbc);
+        gbc.gridx = 1;
+        JTextArea description = new JTextArea(10,20);
+        mainPanel.add(description, gbc);
+
+
+
+        // Add mainPanel to CENTER of taskFrame content pane
+        taskFrame.getContentPane().add(mainPanel, BorderLayout.CENTER);
+
+        // Make taskFrame visible
+        taskFrame.setVisible(true);
+
+
+        /**
+         * addbutton logic
+         * använd stream kanske?
+         */
+        addEventButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            DailyEvent newEVent;
+                /**
+                 * if some fields are filled user can add else it will send a JDialog saying all fields are not filled
+                 * Jag vill egentligen att allt ska nollstälals så man kan fortsätta till man är nöjd. Och när den stängs så stängs inte allt
+                 * Bara det fönstret där man lägger till
+                 */
+                if (!titleOfEvent.getText().isEmpty() && !typeOfEvent.getText().isEmpty() && !startAndEnd.getText().isEmpty()) {
+                    System.out.println("hej"); //printar så denna funkar men den printar alltid när jah trycker tyvärr
+                    addEvent(day);
+                    dispose();
+                }else {
+                    // Display error message if required fields are empty
+                    JOptionPane.showMessageDialog(null, "Please fill in all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+        });
     }
 
-    public void addEvent(HashMap<LocalTime, DailyEvent> a ,LocalDate date){
-        String titleE = titleOfEvent.getText();
+
+    /**
+     * This listens actionlistener to the add event butto
+     * Only visible if three of the main fields are filled
+     * Returns a map, m
+     * Vill att den ska skicka till Day, kanske om
+     * @return
+     */
+    public void addEvent(EventListener day){
+        String title = titleOfEvent.getText();
         String type = typeOfEvent.getText();
         String start = startAndEnd.getText();
-
-        // Define a DateTimeFormatter for parsing time in "HH:mm" format
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-
-        // Parse the time string into a LocalTime object
-        LocalTime inputTime = LocalTime.parse(start, formatter);
-
-        DailyEvent event = new DailyEvent(titleE, type,start,start);
-        tasksThisDay.put(inputTime,event);
+        DailyEvent newEvent = new DailyEvent(title, type, start,start);
+        // Parse the inputed start and end time
+        // add to map
+        LocalTime time = LocalTime.now();
         /**
-         * will be the given days on field
+         * Use a stream that sends to the Dage and updates
+         * Or send the DayData as a parameter and then call it DayData.update()
+         * Tänk typ att Day skickar sin parameter typ EVents som är en map. Om jag sen kallar på typ Day.sortData() så
+         * Kan prova stram annts
          */
-        a.put(inputTime, event);
-    }
 
-    /**
-     * adds all necessary data which is later sent back to the dayFrame in the calendar
-     * @param a
-     */
-    public void addEventData(Map<LocalDate, HashMap<LocalTime, DailyEvent>> a){
-        timeOfEvent.put(userInputedTime, userInputedEvent);
-        a.put(date, timeOfEvent);
+        tasksThisDay.put(time, newEvent);
+        day.onEventAdded(title, type, start,start);
 
     }
 
-    public boolean necessaryFieldsFilled(){
-        arrayOfNeccText[0] = titleOfEvent;
-        arrayOfNeccText[1] = typeOfEvent;
-        arrayOfNeccText[2] = startAndEnd;
-        for (int i = 0; i<arrayOfNeccText.length; i++){
-            String inputText = arrayOfNeccText[i].getText();
-            if (inputText.isEmpty()){
-                return false;
-
-            }
-        }
-        addEventButton.setVisible(true);
-        return true;
-
-
+    public HashMap<LocalTime, DailyEvent> getTasksThisDay(){
+        return tasksThisDay;
     }
 
-    /**
-     * getTask()
-     * returns task type, task name, startime of task, end time of task, and description
-     */
+    public static void main(String[] args) {
+        // Example usage: create a new EventGUI frame
+        LocalDate currentDate = LocalDate.now();
+        Day day = new Day(currentDate);
+        SwingUtilities.invokeLater(() -> new EventGUI(day));
+    }
 }
