@@ -149,8 +149,25 @@ public class Day extends JFrame implements EventListener {
 
     }
 
+    public String[] arrayForHamburger(){
+        String[] a = new String[tasksThisDay.size()];
+        for(int i= 0; i<a.length;i++){
+            for (LocalTime key : tasksThisDay.keySet()) {
+                a[i] = key+ " " + tasksThisDay.get(key).toString();
+                i++;
+            }
+
+        }
+
+        return a;
+    }
+
     public HashMap<LocalTime, DailyEvent> getTasksThisDay(){
         return tasksThisDay;
+    }
+
+    public JPanel getCenterPanel(){
+        return  centerPanel;
     }
 
     public static void main(String[] args) {
