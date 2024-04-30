@@ -1,3 +1,5 @@
+import java.time.LocalTime;
+
 public class DailyEvent {
     /**
      * Class keeping track of daily events
@@ -5,7 +7,8 @@ public class DailyEvent {
      */
 
     private String type;
-    private String titleOfEvent, startTime, endTime;
+    private String titleOfEvent, description;
+    private LocalTime startTime, endTime;
     private int month, day, year;
 
 
@@ -14,15 +17,15 @@ public class DailyEvent {
      * They will pick a date
      * They have to pick a start and end time
      * @param titleOfEvent
-     * @param date
      * @param startTime
      * @param endTime
      */
-    public DailyEvent(String titleOfEvent, String id, String startTime, String endTime) {
+    public DailyEvent(String titleOfEvent, String id, LocalTime startTime, LocalTime endTime, String description) {
         this.titleOfEvent = titleOfEvent;
         this.type = id;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.description = description;
 
 
     }
@@ -36,7 +39,12 @@ public class DailyEvent {
 
     }
 
-    private String getDate(){
-        return startTime;
+
+
+
+    @Override
+    public String toString(){
+        return titleOfEvent;
+
     }
 }

@@ -12,10 +12,10 @@ public class Day extends JFrame implements EventListener {
     private HashMap<LocalTime,DailyEvent> tasksThisDay = new HashMap<LocalTime, DailyEvent>();
 
     @Override
-    public void onEventAdded(String title, String type, String startTime, String endTime, String description) {
+    public void onEventAdded(String title, String type, LocalTime startTime, LocalTime endTime, String description) {
         // Create a new DailyEvent instance with the received data
         DailyEvent event = new DailyEvent(title, type, startTime, endTime, description);
-        LocalTime time = LocalTime.now();
+        LocalTime time = startTime;
         tasksThisDay.put(time, event);
         updateDisplay(); // Method to update the display with the new task
     }
@@ -141,9 +141,6 @@ public class Day extends JFrame implements EventListener {
             timey++;
             gbc.gridx = 0;
             gbc.gridy = timey;
-
-
-
 
         }
 

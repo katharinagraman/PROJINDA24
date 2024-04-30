@@ -26,7 +26,9 @@ public class EventGUI extends JFrame {
     private LocalTime userInputedTime;
     private DailyEvent userInputedEvent;
 
-    private String[] times = new String[24];
+    private String[] timesHH = new String[24];
+    private String[] timesMM = new String[60];
+
 
     private JPanel titleOfEventPanel, typeOfEventPanel, startAndEndPanel, descriptionPanel;
     private JTextField titleOfEvent, typeOfEvent, start1,start2, end1, end2; // typeOfevent ska va en såndär meny man markerar
@@ -43,8 +45,17 @@ public class EventGUI extends JFrame {
 
     public EventGUI(EventListener day) {
         for(int i = 0; i<24; i++){
-            this.times[i] = String.valueOf(i);
+            this.timesHH[i] = String.valueOf(i);
 
+        }
+        for(int i = 0; i<60; i++){
+            for(int j = 0; j<6; j++){
+                for(int k = 0; k<10;k++ ){
+                    this.timesMM[i] = ""+j+k;
+                    i++;
+                }
+
+            }
         }
         this.eventListener = day;
 
@@ -171,13 +182,13 @@ public class EventGUI extends JFrame {
     public void addEvent(EventListener day){
         String title = titleOfEvent.getText();
         String type = typeComboBox.getItemAt(typeComboBox.getSelectedIndex());
-        String start = getStartTime(start1,start2);
-        String end = getEndTime(end1,end2);
+        LocalTime start = getTime(getTimeString(start1,start2));
+        LocalTime end = getTime(getTimeString(end1,end2));
         String descriptionE = description.getText();
-        DailyEvent newEvent = new DailyEvent(title, type, start,start, descriptionE);
+        DailyEvent newEvent = new DailyEvent(title, type, start, end, descriptionE);
         // Parse the inputed start and end time
         // add to map
-        LocalTime time = LocalTime.now();
+        //LocalTime time = LocalTime.now();
         /**
          * Use a stream that sends to the Dage and updates
          * Or send the DayData as a parameter and then call it DayData.update()
@@ -185,39 +196,48 @@ public class EventGUI extends JFrame {
          * Kan prova stram annts
          */
 
-        tasksThisDay.put(time, newEvent);
+        tasksThisDay.put(start, newEvent);
         day.onEventAdded(title, type, start,end, descriptionE);
 
     }
     /**
      * Gör så att den översätter strängar till LocalTime ist
      */
-    public String getStartTime(JTextField a, JTextField b){
-        if(legalInputTimes(a.getText()) && legalInputTimes(b.getText())){
+    public String getTimeString(JTextField a, JTextField b){
+        if(legalInputHourTimes(a.getText()) && legalInputMinuteTimes(b.getText())){
+            System.out.println("yes sir");
             return a.getText() +":"+b.getText();
         }
+        // JOptionPane.showMessageDialog(null, "Please fill in all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
+        /**
+         * sends an error duvet typ error fönstret
+         */
         return null;
 
     }
 
-    public String getEndTime(JTextField a, JTextField b){
-        if(legalInputTimes(a.getText()) && legalInputTimes(b.getText())){
-            return a.getText() +":"+b.getText();
-        }
-        return null;
-
+    public LocalTime getTime(String timeString){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return LocalTime.parse(timeString, formatter);
     }
 
-    public boolean legalInputTimes(String a){
-        for(String x : times){
+
+    public boolean legalInputHourTimes(String a){
+        for(String x : timesHH){
             if(x.equals(a)){
                 return true;
             }
         }
         return false;
+    }
 
-
-
+    public boolean legalInputMinuteTimes(String a){
+        for(String x : timesMM){
+            if(x.equals(a)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public HashMap<LocalTime, DailyEvent> getTasksThisDay(){
