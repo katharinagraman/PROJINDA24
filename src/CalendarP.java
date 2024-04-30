@@ -27,7 +27,7 @@ public class CalendarP {
         mainFrame.setSize(1000, 600);
 
         // Create the calendar panel
-        calendarPanel = new JPanel(new GridLayout(4, 7)); // Calendar grid (4 rows x 7 columns)
+        calendarPanel = new JPanel(new GridLayout(0,7 )); // Calendar grid (4 rows x 7 columns)
         calendarPanel.setSize(800,600);
         // Display the current month's calendar
         displayCalendar(LocalDate.now());
