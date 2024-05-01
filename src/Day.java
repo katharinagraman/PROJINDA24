@@ -37,6 +37,17 @@ public class Day extends JFrame implements EventListener {
 
 
             JLabel timeEventLabel = new JLabel(time.toString() +" "+ event.toString());
+            timeEventLabel.setOpaque(true);
+            if (event.getType().equals("Task")) {
+                timeEventLabel.setBackground(Color.BLUE);
+                timeEventLabel.setForeground(Color.BLACK); // Set text color for contrast
+            } else if (event.getType().equals("Event")) {
+                timeEventLabel.setBackground(Color.RED);
+                timeEventLabel.setForeground(Color.BLACK);
+            } else if (event.getType().equals("Chore")) {
+                timeEventLabel.setBackground(Color.GREEN);
+                timeEventLabel.setForeground(Color.BLACK); // Adjust text color for contrast
+            }
             // Add timeLabel and eventLabel to centerPanel
             centerPanel.add(timeEventLabel);
 
@@ -52,6 +63,8 @@ public class Day extends JFrame implements EventListener {
 
     public Day(LocalDate date) {
         super("Day: " + date);
+
+
 
         // Create main panel with BorderLayout and set its background color to black
         mainPanel = new JPanel(new BorderLayout());
@@ -93,12 +106,40 @@ public class Day extends JFrame implements EventListener {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  // Set default close operation
         setVisible(true);  // Make the frame visible
 
+        //-------- Panels according to hour ------ //
+        JPanel[] hourPanels = new JPanel[24];
+        for(int i = 0; i<24; i++){
+            if(i < 10){
+                JLabel hourLabel = new JLabel("0"+ i);
+            }
+            JLabel hourLabel = new JLabel(String.valueOf(i));
+            JPanel hourPanel = new JPanel();
+            hourPanel.add(hourLabel);
+            hourPanel.setSize(480,480);
+            hourPanels[i] = hourPanel;
+            centerPanel.add(hourPanel);
+            centerPanel.add(Box.createVerticalStrut(10));
+
+        }
+
+        // --------- Panels according to minute -------------//
+        JPanel[] minutesOfHours= new JPanel[12];
+        for(int i = 0; i<12; i++){
+            JPanel hourPanel = new JPanel();
+            hourPanel.setSize(480,480);
+            hourPanels[i] = hourPanel;
+        }
+
+        // ---- scroll pane ---//
+
         addButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 // Open a new frame or perform an action when a day is clicked
                 openCreateEventFrame(date, tasksThisDay);
             }
         });
+
+
     }
 
     public void openCreateEventFrame(LocalDate date, HashMap<LocalTime, DailyEvent> eventsThisDay){
