@@ -26,7 +26,7 @@ public class EventGUI extends JFrame {
     private LocalTime userInputedTime;
     private DailyEvent userInputedEvent;
 
-    private String[] timesHH = new String[24];
+    private String[] timesHH = new String[34];
     private String[] timesMM = new String[60];
 
 
@@ -44,10 +44,22 @@ public class EventGUI extends JFrame {
 
 
     public EventGUI(EventListener day) {
+
         for(int i = 0; i<24; i++){
             this.timesHH[i] = String.valueOf(i);
-
         }
+        for(int i = 0; i<10; i++){
+            for(int j = 0; i<1; i++){
+                for(int k = 0; j<10; j++){
+                    this.timesHH[i] = ""+j+k;
+                    i++;
+
+                }
+
+            }
+        }
+
+
         for(int i = 0; i<60; i++){
             for(int j = 0; j<6; j++){
                 for(int k = 0; k<10;k++ ){
@@ -152,7 +164,7 @@ public class EventGUI extends JFrame {
         addEventButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-            DailyEvent newEVent;
+                DailyEvent newEVent;
                 /**
                  * if some fields are filled user can add else it will send a JDialog saying all fields are not filled
                  * Jag vill egentligen att allt ska nollstälals så man kan fortsätta till man är nöjd. Och när den stängs så stängs inte allt
@@ -205,6 +217,9 @@ public class EventGUI extends JFrame {
      */
     public String getTimeString(JTextField a, JTextField b){
         if(legalInputHourTimes(a.getText()) && legalInputMinuteTimes(b.getText())){
+            if(a.getText().length() == 1){
+                return "0"+a.getText() +":"+ b.getText();
+            }
             System.out.println("yes sir");
             return a.getText() +":"+b.getText();
         }
@@ -224,6 +239,8 @@ public class EventGUI extends JFrame {
 
     public boolean legalInputHourTimes(String a){
         for(String x : timesHH){
+            //if(a.charAt(0) == 0){
+            //}
             if(x.equals(a)){
                 return true;
             }
@@ -233,6 +250,7 @@ public class EventGUI extends JFrame {
 
     public boolean legalInputMinuteTimes(String a){
         for(String x : timesMM){
+
             if(x.equals(a)){
                 return true;
             }
