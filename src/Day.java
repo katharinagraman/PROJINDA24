@@ -9,7 +9,7 @@ public class Day extends JFrame implements EventListener {
     private DataTemplate data;
     private JPanel mainPanel, centerPanel;
 
-    private HashMap<LocalTime,DailyEvent> tasksThisDay = new HashMap<LocalTime, DailyEvent>();
+    private HashMap<LocalTime,DailyEvent> tasksThisDay = new HashMap<>();
 
     @Override
     public void onEventAdded(String title, String type, LocalTime startTime, LocalTime endTime, String description) {
@@ -21,24 +21,28 @@ public class Day extends JFrame implements EventListener {
     }
 
     // Method to update the display with the tasks
+    // behöver en metof som kan sortera så blir det lättare när jag printar
     private void updateDisplay() {
         centerPanel.removeAll();
+        //sort(tasksThisDay);
 
         // Set layout manager to BoxLayout.Y_AXIS
         centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+
 
         // Rebuild the display based on tasksThisDay
         for (Map.Entry<LocalTime, DailyEvent> entry : tasksThisDay.entrySet()) {
             LocalTime time = entry.getKey();
             DailyEvent event = entry.getValue();
 
-            JLabel timeEventLabel = new JLabel(time.toString() +" "+ event.toString());
 
+            JLabel timeEventLabel = new JLabel(time.toString() +" "+ event.toString());
             // Add timeLabel and eventLabel to centerPanel
             centerPanel.add(timeEventLabel);
 
             // Add vertical spacing (adjust as needed)
             centerPanel.add(Box.createVerticalStrut(10));
+            centerPanel.add(Box.createHorizontalStrut(50));
         }
 
         // Repaint the panel to reflect the changes
@@ -101,6 +105,38 @@ public class Day extends JFrame implements EventListener {
         JFrame eventFrame = new EventGUI(this);
 
 
+    }
+
+    public void sort(){
+        HashMap<LocalTime, DailyEvent> sortedMap = new HashMap<>();
+        Set<LocalTime> keys = tasksThisDay.keySet();
+        LocalTime[] times = new LocalTime[tasksThisDay.size()];
+        for(int i = 0; i<tasksThisDay.size(); i++){
+            for (LocalTime key : tasksThisDay.keySet()) {
+                times[i] = key;
+                i++;
+            }
+        }
+
+        int n = times.length;
+        for (int i = 1; i < n; ++i) {
+            LocalTime key = times[i];
+            int j = i - 1;
+
+            /* Move elements of arr[0..i-1], that are
+               greater than key, to one position ahead
+               of their current position */
+            while (j >= 0 && (times[j].compareTo(key) > 0)) {
+                times[j + 1] = times[j];
+                j = j - 1;
+            }
+            times[j + 1] = key;
+        }
+        for(int i = 0; i<tasksThisDay.size();i++){
+            sortedMap.put(times[i], tasksThisDay.get(times[i]));
+            System.out.println(sortedMap.entrySet());
+        }
+        tasksThisDay = sortedMap;
     }
 
     public void createSortedEventBackground(){
@@ -166,6 +202,8 @@ public class Day extends JFrame implements EventListener {
     public JPanel getCenterPanel(){
         return  centerPanel;
     }
+
+
 
     public static void main(String[] args) {
         // Example usage: create a new Day frame
