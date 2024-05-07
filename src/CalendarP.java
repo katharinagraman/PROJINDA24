@@ -47,16 +47,12 @@ public class CalendarP {
         mainFrame.setSize(1920, 1080);
 
 
-
-
-
-
         //---- hamburger ---///
 
         // Create side menu panel (initially hidden)
         sideMenuPanel = new JPanel();
         sideMenuPanel.setBackground(Color.WHITE);
-        sideMenuPanel.setPreferredSize(new Dimension(200, mainFrame.getHeight())); // Adjust width as needed
+        sideMenuPanel.setPreferredSize(new Dimension(300, mainFrame.getHeight())); // Adjust width as needed
         sideMenuPanel.setVisible(false);
 
 
@@ -75,6 +71,10 @@ public class CalendarP {
         title = new JLabel("My Planner");
         title.setFont(new Font("Georgia", Font.BOLD, 32));
         titlePanel.add(title, BorderLayout.WEST);
+        //titlePanel.setBackground(Color.BLACK);
+
+
+
 
         // Add hamburger button to the title panel (align right)
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -99,23 +99,22 @@ public class CalendarP {
         mainFrame.add(calendarPanel, BorderLayout.WEST);
 
 
-        goLeftMonth = new JButton("<");
-        goLeftMonth.setSize(40,40);
-
-        goRightMonth = new JButton(">");
-        goRightMonth.setSize(40,40);
-
-
         JPanel changeButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        changeButtonPanel.setSize(mainFrame.getWidth() - hamburgerButton.getWidth() - 10, 45);
-        changeButtonPanel.add(goLeftMonth, BorderLayout.EAST);
-        monthLB = new JLabel( dateOfChosenMonth.getMonth().toString());
+        changeButtonPanel.setBackground(new Color(230, 230, 250));
+
+        // Create buttons and add them to the button panel
+        goLeftMonth = new JButton("<");
+        goRightMonth = new JButton(">");
+        monthLB = new JLabel(dateOfChosenMonth.getMonth().toString());
         changeButtonPanel.add(monthLB, BorderLayout.CENTER);
-        changeButtonPanel.add(goRightMonth, BorderLayout.WEST);
-        changeButtonPanel.setBackground(Color.WHITE);
+        changeButtonPanel.add(goLeftMonth, BorderLayout.WEST);
+        changeButtonPanel.add(goRightMonth, BorderLayout.EAST);
+
+        // Add button panel to the center of titlePanel
+        titlePanel.add(changeButtonPanel, BorderLayout.CENTER);
 
 
-       titlePanel.add(buttonPanel, BorderLayout.CENTER);
+
 
         goLeftMonth.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -130,6 +129,8 @@ public class CalendarP {
                 oneMonthForward();
             }
         });
+
+
 
 
 
