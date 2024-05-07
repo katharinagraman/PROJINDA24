@@ -30,6 +30,10 @@ public class DailyEvent {
 
     }
 
+    public String getType(){
+        return type;
+    }
+
     /**
      * Returns the name the event user has chosen
      * @return titleOfEvent
