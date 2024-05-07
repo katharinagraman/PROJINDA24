@@ -1,12 +1,20 @@
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CalendarP {
+
+    ZonedDateTime today, dateOfChosenMonth;
+
+    JButton goLeftMonth;
+    JButton goRightMonth;
+
+    JLabel month, year;
 
     HashMap<LocalDate, Day> mapOfDaysWithTasks = new HashMap<>();
 
@@ -22,13 +30,47 @@ public class CalendarP {
     private Map<Date, HashMap<Date,DailyEvent>> tasksEachDay = new HashMap<>();
 
     public CalendarP() {
+        today = ZonedDateTime.now();
+        dateOfChosenMonth = ZonedDateTime.now();
+
+
         mainFrame = new JFrame("Calendar");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainFrame.setSize(1000, 600);
 
+        goLeftMonth = new JButton("<");
+        goLeftMonth.setSize(40,40);
+        JPanel titlePanelMonth = new JPanel();
+        titlePanelMonth.add(goLeftMonth, BorderLayout.WEST);
+
+        goRightMonth = new JButton(">");
+        goRightMonth.setSize(40,40);
+        JPanel rightPanel = new JPanel();
+        titlePanelMonth.add(goRightMonth, BorderLayout.EAST);
+
+        JLabel monthL = new JLabel(dateOfChosenMonth.getMonth().toString());
+        titlePanelMonth.add(monthL, BorderLayout.CENTER);
+
+        mainFrame.add(titlePanelMonth, BorderLayout.NORTH);
+
+        goLeftMonth.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                // Open a new frame or perform an action when a day is clicked
+                oneMonthBackward();
+            }
+         });
+
+        goRightMonth.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                // Open a new frame or perform an action when a day is clicked
+                oneMonthForward();
+            }
+        });
+
         // Create the calendar panel
         calendarPanel = new JPanel(new GridLayout(0,7 )); // Calendar grid (4 rows x 7 columns)
         calendarPanel.setSize(800,600);
+        mainFrame.add(calendarPanel);
         // Display the current month's calendar
         displayCalendar(LocalDate.now());
 
@@ -37,8 +79,21 @@ public class CalendarP {
     }
 
 
+    private void makeCalendar(){
+        today = ZonedDateTime.now();
+        month = new JLabel(today.getMonth().toString());
+        year = new JLabel(String.valueOf(today.getYear()));
+
+
+        double spacingHorizontal = 1.5;
+        double spacingVertical = 1.5;
+
+    }
+
+
     // displays calendar
     private void displayCalendar(LocalDate date) {
+        makeCalendar();
         // Clear existing calendar panel
         calendarPanel.removeAll();
 
@@ -84,6 +139,19 @@ public class CalendarP {
         });
 
         return dayPanel;
+    }
+
+    /**
+     * Method for actionlistener
+     */
+    private void oneMonthForward(){
+        dateOfChosenMonth = dateOfChosenMonth.plusMonths(1);
+        displayCalendar(dateOfChosenMonth.toLocalDate());
+    }
+
+    private void oneMonthBackward(){
+        dateOfChosenMonth =dateOfChosenMonth.plusMonths(-1);
+        displayCalendar(dateOfChosenMonth.toLocalDate());
     }
 
     // method that actionlistener adapts, creates a new day fram
