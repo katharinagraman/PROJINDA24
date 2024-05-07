@@ -2,10 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Day extends JFrame implements EventListener {
+
+    private ZonedDateTime today = ZonedDateTime.now();
+    private int todayDate = ZonedDateTime.now().getDayOfMonth();
+    private int month = ZonedDateTime.now().getMonthValue();
     private DataTemplate data;
     private JPanel mainPanel, centerPanel;
 
@@ -63,8 +68,6 @@ public class Day extends JFrame implements EventListener {
 
     public Day(LocalDate date) {
         super("Day: " + date);
-
-
 
         // Create main panel with BorderLayout and set its background color to black
         mainPanel = new JPanel(new BorderLayout());
