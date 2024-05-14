@@ -7,6 +7,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalTime;
 import java.util.*;
 import java.time.LocalDate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EventGUI extends JFrame {
     /**
@@ -37,7 +39,7 @@ public class EventGUI extends JFrame {
     private JPanel titleOfEventPanel, typeOfEventPanel, startAndEndPanel, descriptionPanel;
     private JTextField titleOfEvent, typeOfEvent, start1,start2, end1, end2; // typeOfevent ska va en såndär meny man markerar
     //default ska vara en task
-    private JTextField[] arrayOfNeccText = new JTextField[3];
+    private JTextField[] arrayOfNeccTextF = new JTextField[4];
     private JFrame taskFrame = new JFrame();
 
 
@@ -46,6 +48,11 @@ public class EventGUI extends JFrame {
      * @param day Day object that calls it
      */
     public EventGUI(EventListener day, EventListenerDraw dailyCalendar) {
+
+        this.arrayOfNeccTextF[0] = start1;
+        this.arrayOfNeccTextF[1] = start2;
+        this.arrayOfNeccTextF[2] = end1;
+        this.arrayOfNeccTextF[3] = end2;
 
         /**
          * Filling the arrays with the times that a user may input
@@ -181,8 +188,21 @@ public class EventGUI extends JFrame {
                  * Bara det fönstret där man lägger till
                  */
                 if (!titleOfEvent.getText().isEmpty() && !start1.getText().isEmpty() && !start2.getText().isEmpty() && !end1.getText().isEmpty() && !end2.getText().isEmpty()) {
-                    addEvent(day);
-                    dispose();
+                    // logic for non numbers
+
+                    LocalTime start = getTime(getTimeString(start1,start2));
+                    LocalTime end = getTime(getTimeString(end1,end2));
+
+                    if (startTimeIsNotSoonerThanEnd(start, end)){
+                        addEvent(day);
+
+                    }else{
+                        JOptionPane.showMessageDialog(null, "Events cannot start sooner than they end", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                    if(start1.getText().length() > 2 || start2.getText().length() > 2 || end1.getText().length() > 2 || end2.getText().length() > 2){
+                        JOptionPane.showMessageDialog(null, "To many characters in the time field", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+
                 }else {
                     // Display error message if required fields are empty
                     JOptionPane.showMessageDialog(null, "Please fill in all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -223,7 +243,16 @@ public class EventGUI extends JFrame {
         // lägga in ävem här för daily design?
         //dailyCalendar.setEventsToday();
         dailyCalendar.drawEvent(tasksThisDay);
+        dispose();
 
+
+    }
+
+    public boolean startTimeIsNotSoonerThanEnd(LocalTime start, LocalTime end){
+        if(start.isBefore(end)){
+            return true;
+        }
+        return false;
 
     }
     /**
@@ -237,7 +266,7 @@ public class EventGUI extends JFrame {
             System.out.println("yes sir");
             return a.getText() +":"+b.getText();
         }
-        // JOptionPane.showMessageDialog(null, "Please fill in all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
+
         /**
          * sends an error duvet typ error fönstret
          */
@@ -253,12 +282,11 @@ public class EventGUI extends JFrame {
 
     public boolean legalInputHourTimes(String a){
         for(String x : timesHH){
-            //if(a.charAt(0) == 0){
-            //}
             if(x.equals(a)){
                 return true;
             }
         }
+
         return false;
     }
 

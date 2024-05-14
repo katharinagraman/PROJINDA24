@@ -30,7 +30,17 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
     private static final int HOUR_HEIGHT = 100;
 
     public void drawEvent(HashMap<LocalTime, DailyEvent> a){
-        this.eventsToday = a;
+        if(this.eventsToday != null){
+            if(this.eventsToday.size()>1){
+                this.eventsToday.putAll(a);
+            }
+        }else {
+            this.eventsToday = a;
+
+        }
+
+
+
         repaint(); // repaint trigger paintComnponent
     }
 
@@ -96,10 +106,10 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
         }
 
         // Example: Drawing events (you can replace this with actual event rendering logic)
-        g2.setColor(Color.BLUE);
-        g2.fillRect(COLUMN_WIDTH, intervalHeight * 2, COLUMN_WIDTH, intervalHeight* 3); // Example event block
-        g2.setColor(Color.GREEN);
-        g2.fillRect(COLUMN_WIDTH, intervalHeight *14, COLUMN_WIDTH, intervalHeight*(16-14));
+        //g2.setColor(Color.BLUE);
+        //g2.fillRect(COLUMN_WIDTH, intervalHeight * 2, COLUMN_WIDTH, intervalHeight* 3); // Example event block
+        //g2.setColor(Color.GREEN);
+        //g2.fillRect(COLUMN_WIDTH, intervalHeight *14, COLUMN_WIDTH, intervalHeight*(16-14));
         if(eventsToday != null){
             drawEventsOnTimeTable(eventsToday, g2);
         }
@@ -126,12 +136,22 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             }
             heightOfTask = y1Coordinate - y0Coordinate;
 
+            Color eventColour = a.get(key).getColourOfEvent();
 
-            g2.setColor(a.get(key).getColourOfEvent());
+            // Desaturate the color (reduce saturation)
+            float[] hsbValues = Color.RGBtoHSB(eventColour.getRed(), eventColour.getGreen(), eventColour.getBlue(), null);
+            Color desaturatedColor = Color.getHSBColor(hsbValues[0], 0.3f, hsbValues[2]); // Adjust saturation (0.3f for less saturation)
 
-            System.out.println(y0Coordinate +" "+ a.get(key).getColourOfEvent().toString());
+            // Set the opacity (alpha) of the color (less opaque)
+            Color lessOpaqueColor = new Color(desaturatedColor.getRed(), desaturatedColor.getGreen(), desaturatedColor.getBlue(), 150); // Alpha value (0-255)
+
             //repaint(COLUMN_WIDTH,y0Coordinate,COLUMN_WIDTH,heightOfTask);
+            g2.setColor(lessOpaqueColor);
             g2.fillRect(COLUMN_WIDTH, y0Coordinate, COLUMN_WIDTH, heightOfTask);
+            g2.setColor(Color.BLACK);
+            g2.drawString(a.get(key).getTitle() + " "+ startTime + "-"+ endTime, COLUMN_WIDTH + 10, y0Coordinate + 20);
+            g2.setColor(a.get(key).getColourOfEvent()); // Set border color
+            g2.drawRect(COLUMN_WIDTH, y0Coordinate, COLUMN_WIDTH, heightOfTask); // Draw border
         }
 
     }
