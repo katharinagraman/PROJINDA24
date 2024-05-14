@@ -11,11 +11,11 @@ public class Day extends JFrame implements EventListener {
      * Every day panel will have a Day Frame
      * This is also an object which stores tasks
      */
-    private DayDesign dailyCalender = new DayDesign();
+    private DayDesign dailyCalender = new DayDesign(this);
     private ZonedDateTime today = ZonedDateTime.now();
     private int todayDate = ZonedDateTime.now().getDayOfMonth();
     private int month = ZonedDateTime.now().getMonthValue();
-    private DataTemplate data;
+
     private JPanel mainPanel, centerPanel;
 
     private HashMap<LocalTime,DailyEvent> tasksThisDay = new HashMap<>();
@@ -42,12 +42,13 @@ public class Day extends JFrame implements EventListener {
     private void updateDisplay() {
         // remvoes current
         centerPanel.removeAll();
-        //sort(tasksThisDay);
-
-        // Set layout manager to BoxLayout.Y_AXIS
-        centerPanel.setLayout(new BorderLayout());
-        dailyCalender.drawEventsOnTimeTable(tasksThisDay, dailyCalender.getGraphics());
-        centerPanel.add(dailyCalender, BorderLayout.WEST);
+        // DaydDesign newDaily = new DayDesing(this)
+        // newDaily.setEvents = tasksThisDay.
+        //JScrollPane scrollPane = new JScrollPane(dailyCalender);
+        // centerPanel.add(scrollPane, BorderLayout.WEST);
+        //
+        JScrollPane scrollPane = new JScrollPane(dailyCalender);
+        centerPanel.add(scrollPane, BorderLayout.WEST);
 
         // Repaint the panel to reflect the changes
         centerPanel.revalidate();
@@ -145,7 +146,7 @@ public class Day extends JFrame implements EventListener {
      * @param eventsThisDay
      */
     public void openCreateEventFrame(LocalDate date, HashMap<LocalTime, DailyEvent> eventsThisDay){
-        JFrame eventFrame = new EventGUI(this);
+        JFrame eventFrame = new EventGUI(this, dailyCalender);
 
 
     }
@@ -182,16 +183,8 @@ public class Day extends JFrame implements EventListener {
         tasksThisDay = sortedMap;
     }
 
-    public void createSortedEventBackground(){
-        JPanel mainDesignPanel = new JPanel();
-        data = new DataTemplate(tasksThisDay);
-        data.sort();
-    }
 
-    public void createDesignForDefaultBackground(){
-        JPanel mainDesignPanel = new JPanel();
 
-    }
 
     /**
      * Får typ skapa fält som representerar en tid

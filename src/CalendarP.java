@@ -104,6 +104,7 @@ public class CalendarP {
         // Create the calendar panel
         calendarPanel = new JPanel(new GridLayout(0,7 ));
         calendarPanel.setSize(800,400);
+        calendarPanel.setBackground(Color.GREEN);
         mainFrame.add(calendarPanel, BorderLayout.WEST);
 
         /**
@@ -198,6 +199,7 @@ public class CalendarP {
         // while currentDate is still within the same date as the month of the parameter value
         while (currentDate.getMonthValue() == date.getMonthValue()) {
             JPanel dayPanel = createDayPanel(currentDate);
+            dayPanel.setBackground(Color.BLUE);
             calendarPanel.add(dayPanel);
             currentDate = currentDate.plusDays(1);
         }
@@ -289,17 +291,34 @@ public class CalendarP {
         return mapOfDaysWithTasks;
     }
 
+    private void printToSideMenu(HashMap<LocalTime, DailyEvent> events){
+        todaysFrame = mapOfDaysWithTasks.get(today.toLocalDate());
+        HashMap<LocalTime, DailyEvent> mapforDay = todaysFrame.getTasksThisDay();
+        String[] a = todaysFrame.arrayForHamburger();
+        StringBuilder str = new StringBuilder();
+
+        for (int i = 0; i < mapforDay.size(); i++) {
+            str.append(a[i]).append("\n");
+        }
+        sideMenuPanel.removeAll();
+        JTextArea textAreaForSideMenu = new JTextArea(300, mainFrame.getHeight());
+        textAreaForSideMenu.append(str.toString());
+        sideMenuPanel.add(textAreaForSideMenu);
+        sideMenuPanel.revalidate();
+        sideMenuPanel.repaint();
+        mainFrame.revalidate();
+        mainFrame.repaint();
+
+    }
+
 
     private void toggleSideMenu() {
         sideMenuPanel.removeAll();
         LocalDate now = LocalDate.now();
         sideMenuPanel.setVisible(!sideMenuPanel.isVisible());
-
-
         if(mapOfDaysWithTasks.containsKey(now)){
             todaysFrame = mapOfDaysWithTasks.get(today.toLocalDate());
             if(!todaysFrame.getTasksThisDay().isEmpty()){
-
                 HashMap<LocalTime, DailyEvent> mapforDay = todaysFrame.getTasksThisDay();
                 String[] a = todaysFrame.arrayForHamburger();
 
