@@ -30,7 +30,17 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
     private static final int HOUR_HEIGHT = 100;
 
     public void drawEvent(HashMap<LocalTime, DailyEvent> a){
-        this.eventsToday = a;
+        if(this.eventsToday != null){
+            if(this.eventsToday.size()>1){
+                this.eventsToday.putAll(a);
+            }
+        }else {
+            this.eventsToday = a;
+
+        }
+
+
+
         repaint(); // repaint trigger paintComnponent
     }
 
