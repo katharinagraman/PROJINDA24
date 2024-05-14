@@ -7,15 +7,27 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Day extends JFrame implements EventListener {
-
+    /**
+     * Every day panel will have a Day Frame
+     * This is also an object which stores tasks
+     */
+    private DayDesign dailyCalender = new DayDesign(this);
     private ZonedDateTime today = ZonedDateTime.now();
     private int todayDate = ZonedDateTime.now().getDayOfMonth();
     private int month = ZonedDateTime.now().getMonthValue();
-    private DataTemplate data;
+
     private JPanel mainPanel, centerPanel;
 
     private HashMap<LocalTime,DailyEvent> tasksThisDay = new HashMap<>();
 
+    /**
+     * This method is used from the interface in order to communicate with EventGUI window
+     * @param title
+     * @param type
+     * @param startTime
+     * @param endTime
+     * @param description
+     */
     @Override
     public void onEventAdded(String title, String type, LocalTime startTime, LocalTime endTime, String description) {
         // Create a new DailyEvent instance with the received data
@@ -28,44 +40,22 @@ public class Day extends JFrame implements EventListener {
     // Method to update the display with the tasks
     // behöver en metof som kan sortera så blir det lättare när jag printar
     private void updateDisplay() {
+        // remvoes current
         centerPanel.removeAll();
-        //sort(tasksThisDay);
-
-        // Set layout manager to BoxLayout.Y_AXIS
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-
-
-        // Rebuild the display based on tasksThisDay
-        for (Map.Entry<LocalTime, DailyEvent> entry : tasksThisDay.entrySet()) {
-            LocalTime time = entry.getKey();
-            DailyEvent event = entry.getValue();
-
-
-            JLabel timeEventLabel = new JLabel(time.toString() +" "+ event.toString());
-            timeEventLabel.setOpaque(true);
-            if (event.getType().equals("Task")) {
-                timeEventLabel.setBackground(Color.BLUE);
-                timeEventLabel.setForeground(Color.BLACK); // Set text color for contrast
-            } else if (event.getType().equals("Event")) {
-                timeEventLabel.setBackground(Color.RED);
-                timeEventLabel.setForeground(Color.BLACK);
-            } else if (event.getType().equals("Chore")) {
-                timeEventLabel.setBackground(Color.GREEN);
-                timeEventLabel.setForeground(Color.BLACK); // Adjust text color for contrast
-            }
-            // Add timeLabel and eventLabel to centerPanel
-            centerPanel.add(timeEventLabel);
-
-            // Add vertical spacing (adjust as needed)
-            centerPanel.add(Box.createVerticalStrut(10));
-            centerPanel.add(Box.createHorizontalStrut(50));
-        }
+        // DaydDesign newDaily = new DayDesing(this)
+        // newDaily.setEvents = tasksThisDay.
+        //JScrollPane scrollPane = new JScrollPane(dailyCalender);
+        // centerPanel.add(scrollPane, BorderLayout.WEST);
+        //
+        JScrollPane scrollPane = new JScrollPane(dailyCalender);
+        centerPanel.add(scrollPane, BorderLayout.WEST);
 
         // Repaint the panel to reflect the changes
         centerPanel.revalidate();
         centerPanel.repaint();
     }
 
+    // constructor
     public Day(LocalDate date) {
         super("Day: " + date);
 
@@ -88,12 +78,13 @@ public class Day extends JFrame implements EventListener {
         buttonPanel.add(addButton);
 
         // Create a smaller panel for the content in the center
-        centerPanel = new JPanel();
+        centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBackground(Color.WHITE); // Set background color for the center panel
         centerPanel.setPreferredSize(new Dimension(400, 300)); // Set preferred size for the center panel
 
-        //JTextArea eventArea = new JTextArea(400,300);
-        //eventArea.setBackground(Color.WHITE);
+        JScrollPane scrollPane = new JScrollPane(dailyCalender);
+        centerPanel.add(scrollPane, BorderLayout.WEST);
+
 
         // Add components to main panel in appropriate positions
         mainPanel.add(dayLabel, BorderLayout.NORTH);
@@ -109,30 +100,31 @@ public class Day extends JFrame implements EventListener {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  // Set default close operation
         setVisible(true);  // Make the frame visible
 
-        //-------- Panels according to hour ------ //
-        JPanel[] hourPanels = new JPanel[24];
-        for(int i = 0; i<24; i++){
-            if(i < 10){
-                JLabel hourLabel = new JLabel("0"+ i);
-            }
-            JLabel hourLabel = new JLabel(String.valueOf(i));
-            JPanel hourPanel = new JPanel();
-            hourPanel.add(hourLabel);
-            hourPanel.setSize(480,480);
-            hourPanels[i] = hourPanel;
-            centerPanel.add(hourPanel);
-            centerPanel.add(Box.createVerticalStrut(10));
 
-        }
 
-        // --------- Panels according to minute -------------//
-        JPanel[] minutesOfHours= new JPanel[12];
-        for(int i = 0; i<12; i++){
-            JPanel hourPanel = new JPanel();
-            hourPanel.setSize(480,480);
-            hourPanels[i] = hourPanel;
-        }
-
+//        //-------- Panels according to hour ------ //
+//        JPanel[] hourPanels = new JPanel[24];
+//        for(int i = 0; i<24; i++){
+//            if(i < 10){
+//                JLabel hourLabel = new JLabel("0"+ i);
+//            }
+//            JLabel hourLabel = new JLabel(String.valueOf(i));
+//            JPanel hourPanel = new JPanel();
+//            hourPanel.add(hourLabel);
+//            hourPanel.setSize(480,480);
+//            hourPanels[i] = hourPanel;
+//            centerPanel.add(hourPanel);
+//            centerPanel.add(Box.createVerticalStrut(10));
+//
+//        }
+//
+// --------- Panels according to minute -------------//
+//        JPanel[] minutesOfHours= new JPanel[12];
+//        for(int i = 0; i<12; i++){
+//            JPanel hourPanel = new JPanel();
+//            hourPanel.setSize(480,480);
+//            hourPanels[i] = hourPanel;
+//        }
         // ---- scroll pane ---//
 
         addButton.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -143,10 +135,18 @@ public class Day extends JFrame implements EventListener {
         });
 
 
+
+
+
     }
 
+    /**
+     * Opens the Window which handles eventmaking
+     * @param date
+     * @param eventsThisDay
+     */
     public void openCreateEventFrame(LocalDate date, HashMap<LocalTime, DailyEvent> eventsThisDay){
-        JFrame eventFrame = new EventGUI(this);
+        JFrame eventFrame = new EventGUI(this, dailyCalender);
 
 
     }
@@ -183,16 +183,8 @@ public class Day extends JFrame implements EventListener {
         tasksThisDay = sortedMap;
     }
 
-    public void createSortedEventBackground(){
-        JPanel mainDesignPanel = new JPanel();
-        data = new DataTemplate(tasksThisDay);
-        data.sort();
-    }
 
-    public void createDesignForDefaultBackground(){
-        JPanel mainDesignPanel = new JPanel();
 
-    }
 
     /**
      * Får typ skapa fält som representerar en tid
@@ -247,6 +239,15 @@ public class Day extends JFrame implements EventListener {
         return  centerPanel;
     }
 
+
+    public String getDate(){
+        return "";
+
+    }
+
+    public void setDate(LocalDate date){
+        System.out.println("skapa variabler som kommer ihåg vilken dag och månad det är som strängar och objekt som attribut");
+    }
 
 
     public static void main(String[] args) {

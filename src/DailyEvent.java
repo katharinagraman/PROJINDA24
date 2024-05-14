@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.time.LocalTime;
 
 public class DailyEvent {
@@ -43,7 +44,23 @@ public class DailyEvent {
 
     }
 
+    public LocalTime getStartTime(){
+        return startTime;
+    }
 
+    public LocalTime getEndTime(){
+        return endTime;
+    }
+
+    public Color getColourOfEvent(){
+        return switch (this.type) {
+            case "task" -> Color.BLUE;
+            case "event" -> Color.RED;
+            case "chore" -> Color.GREEN;
+            default -> Color.BLACK;
+        };
+
+    }
 
 
     @Override

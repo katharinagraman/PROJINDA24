@@ -9,7 +9,11 @@ import java.util.*;
 import java.time.LocalDate;
 
 public class EventGUI extends JFrame {
+    /**
+     * This class handles user tasks
+     */
     private EventListener eventListener;
+    private EventListenerDraw dailyCalendar;
     private LocalDate date;
 
     /**
@@ -35,20 +39,21 @@ public class EventGUI extends JFrame {
     //default ska vara en task
     private JTextField[] arrayOfNeccText = new JTextField[3];
     private JFrame taskFrame = new JFrame();
+
+
     /**
-     * This GUi is similar to apples kalender och det jag gör är egentligen
-     * en panel där man lägger in tasks
-     * Den kommer att skicka data eller om jag använder getTask()
-     *
+     * The constructor will take the day object that calls it
+     * @param day Day object that calls it
      */
+    public EventGUI(EventListener day, EventListenerDraw dailyCalendar) {
 
-
-    public EventGUI(EventListener day) {
-
+        /**
+         * Filling the arrays with the times that a user may input
+         */
         for(int i = 0; i<24; i++){
             this.timesHH[i] = String.valueOf(i);
         }
-        for(int i = 0; i<10; i++){
+        for(int i = 24; i<34; i++){
             for(int j = 0; i<1; i++){
                 for(int k = 0; j<10; j++){
                     this.timesHH[i] = ""+j+k;
@@ -69,17 +74,18 @@ public class EventGUI extends JFrame {
 
             }
         }
+
         this.eventListener = day;
+        this.dailyCalendar = dailyCalendar;
 
-
-        // Initialize components
+        // Initialise Labels
         nameOfEvent = new JLabel("Event Name:");
         type = new JLabel("Event Type:");
         start = new JLabel("Start Time:");
         end = new JLabel("End Time:");
 
-        // Set up taskFrame
-        taskFrame.setTitle("Events for " + date);
+        // Set up task handling Window
+        taskFrame.setTitle("Events for ");
         taskFrame.setSize(500, 500);
         taskFrame.setBackground(Color.WHITE);
         taskFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -90,7 +96,8 @@ public class EventGUI extends JFrame {
         title.setFont(new Font("Georgia", Font.BOLD, 32));
         titlePanel.add(title, BorderLayout.WEST);
 
-        // Set up button panel
+        // Set up button panel used for placing the button at desired postion
+        // I  find it easier
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(addEventButton);
         buttonPanel.setBackground(new Color(230, 230, 250));
@@ -100,6 +107,7 @@ public class EventGUI extends JFrame {
         taskFrame.getContentPane().add(titlePanel, BorderLayout.NORTH);
 
         // Set up mainPanel with GridBagLayout
+        // AI aided
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -160,6 +168,8 @@ public class EventGUI extends JFrame {
         /**
          * addbutton logic
          * använd stream kanske?
+         * Kanske buggen kan lösas om jag använder
+         * addActionListener(e -> toggleSideMenu());
          */
         addEventButton.addActionListener(new ActionListener(){
             @Override
@@ -171,7 +181,6 @@ public class EventGUI extends JFrame {
                  * Bara det fönstret där man lägger till
                  */
                 if (!titleOfEvent.getText().isEmpty() && !start1.getText().isEmpty() && !start2.getText().isEmpty() && !end1.getText().isEmpty() && !end2.getText().isEmpty()) {
-                    System.out.println("hej"); //printar så denna funkar men den printar alltid när jah trycker tyvärr
                     addEvent(day);
                     dispose();
                 }else {
@@ -193,7 +202,7 @@ public class EventGUI extends JFrame {
      */
     public void addEvent(EventListener day){
         String title = titleOfEvent.getText();
-        String type = typeComboBox.getItemAt(typeComboBox.getSelectedIndex());
+        String type = typeComboBox.getItemAt(typeComboBox.getSelectedIndex()).toLowerCase();
         LocalTime start = getTime(getTimeString(start1,start2));
         LocalTime end = getTime(getTimeString(end1,end2));
         String descriptionE = description.getText();
@@ -209,7 +218,12 @@ public class EventGUI extends JFrame {
          */
 
         tasksThisDay.put(start, newEvent);
+        // puts the tasks in the map created in Day
         day.onEventAdded(title, type, start,end, descriptionE);
+        // lägga in ävem här för daily design?
+        //dailyCalendar.setEventsToday();
+        dailyCalendar.drawEvent(tasksThisDay);
+
 
     }
     /**
@@ -262,10 +276,5 @@ public class EventGUI extends JFrame {
         return tasksThisDay;
     }
 
-    public static void main(String[] args) {
-        // Example usage: create a new EventGUI frame
-        LocalDate currentDate = LocalDate.now();
-        Day day = new Day(currentDate);
-        SwingUtilities.invokeLater(() -> new EventGUI(day));
-    }
+
 }
