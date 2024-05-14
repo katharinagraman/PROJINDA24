@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
-import java.util.Map;
 
 public class DayDesign extends JComponent implements Scrollable, EventListenerDraw {
     /**
@@ -20,7 +19,7 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
 
     private static final int INTERVAL_HEIGHT = 60;
     private static final int AMOUNT_COLUMNS = 3;
-    private static final int COLUMN_WIDTH = 800 / 3;;
+    private static final int COLUMN_WIDTH = 800 / 3;
 
     private int intervalHeight;
 
@@ -113,10 +112,20 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             //LocalTime startOfDay = LocalTime.of(0,0); compareTo()
             LocalTime startTime = a.get(key).getStartTime();
             LocalTime endTime = a.get(key).getEndTime();
-
+            System.out.println(startTime.getMinute());
             int y0Coordinate = (startTime.getHour() + startTime.getMinute()) * intervalHeight * 2;
             int y1Coordinate = (endTime.getHour()  + endTime.getMinute()) * intervalHeight * 2;
-            int heightOfTask = y1Coordinate - y0Coordinate;
+            int heightOfTask;
+
+
+            if(((startTime.getMinute() % 60) != 0 && (startTime.getMinute() % 30)!= 0)){
+                y0Coordinate = getStartCoordinate(startTime);
+            }
+            if(((endTime.getMinute() % 60) != 0 && (endTime.getMinute() % 30)!= 0)){
+                y1Coordinate = getEndCoordinate(endTime);
+            }
+            heightOfTask = y1Coordinate - y0Coordinate;
+
 
             g2.setColor(a.get(key).getColourOfEvent());
 
@@ -125,6 +134,26 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             g2.fillRect(COLUMN_WIDTH, y0Coordinate, COLUMN_WIDTH, heightOfTask);
         }
 
+    }
+
+    public int getStartCoordinate(LocalTime start){
+        if(start.getMinute() >0 && start.getMinute() < 30){
+            int subHeight = (intervalHeight / 30) * (start.getMinute());
+            return (start.getHour() * intervalHeight * 2) +  subHeight;
+
+        }
+        int subHeight = (intervalHeight / 30) * (start.getMinute() % 30);
+        return (start.getHour() * (intervalHeight + 1) * 2) +  subHeight;
+    }
+
+    public int getEndCoordinate(LocalTime end){
+        if(end.getMinute() >0 && end.getMinute() < 30){
+            int subHeight = (intervalHeight / 30) * (end.getMinute());
+            return (end.getHour() * intervalHeight * 2) +  subHeight;
+
+        }
+        int subHeight = (intervalHeight / 30) * (end.getMinute() % 30);
+        return (end.getHour() * (intervalHeight + 1) * 2) + subHeight;
     }
 
 
