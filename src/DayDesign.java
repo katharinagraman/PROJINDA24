@@ -1,10 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.lang.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class DayDesign extends JComponent implements Scrollable, EventListenerDraw {
     /**
@@ -23,7 +26,10 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
     private static final int COLUMN_WIDTH = 800 / 3;
 
     private int intervalHeight;
+    // använd mapen kanske
+    private Map<DailyEvent, Rectangle> dailyEventAndBlockOnCalendar = new HashMap<>();
 
+    private ArrayList<Rectangle2D> blockOfEvents = new ArrayList<>();
     private ArrayList<DailyEvent> eventsToday = new ArrayList<>();
 
     private final int numIntervals = (int) (ChronoUnit.MINUTES.between(START_TIME, END_TIME) / TIME_INTERVAL_MINUTES) + 1;
@@ -40,15 +46,19 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
         repaint(); // repaint trigger paintComnponent
     }
 
+    public void removeEvent(ArrayList<DailyEvent> a){
+        this.eventsToday = a;
+    }
+
     // painCOmoonent triggers drawGrid
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         drawGrid(g2);
-
-
-
+        if(eventsToday != null){
+            drawEventsOnTimeTable(eventsToday, g2);
+        }
     }
 
 
@@ -91,9 +101,7 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
         //g2.fillRect(COLUMN_WIDTH, intervalHeight * 2, COLUMN_WIDTH, intervalHeight* 3); // Example event block
         //g2.setColor(Color.GREEN);
         //g2.fillRect(COLUMN_WIDTH, intervalHeight *14, COLUMN_WIDTH, intervalHeight*(16-14));
-        if(eventsToday != null){
-            drawEventsOnTimeTable(eventsToday, g2);
-        }
+
 
     }
 
@@ -118,6 +126,13 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             }
             heightOfTask = y1Coordinate - y0Coordinate;
 
+
+
+
+
+
+
+
             Color eventColour = event.getColourOfEvent();
 
             // Desaturate the color (reduce saturation)
@@ -134,6 +149,18 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             g2.drawString(event.toString(), COLUMN_WIDTH + 10, y0Coordinate + 20);
             g2.setColor(event.getColourOfEvent()); // Set border color
             g2.drawRect(COLUMN_WIDTH, y0Coordinate, COLUMN_WIDTH, heightOfTask); // Draw border
+
+            // -----test ------- //
+            JPanel block = new JPanel();
+            JLabel lb = new JLabel("WASSUP");
+            block.setBounds(COLUMN_WIDTH,y0Coordinate + 50,COLUMN_WIDTH,heightOfTask);
+            block.setBackground(lessOpaqueColor);
+            block.add(lb);
+
+
+
+
+            // -----test ------ //
         }
 
     }
