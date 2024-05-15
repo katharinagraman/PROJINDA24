@@ -31,6 +31,10 @@ public class DailyEvent {
 
     }
 
+    public String getTitle(){
+        return titleOfEvent;
+    }
+
     public String getType(){
         return type;
     }
