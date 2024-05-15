@@ -1,25 +1,26 @@
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class Day extends JFrame implements EventListener {
+public class Day extends JFrame implements EventListener, EventListenerRemove {
     /**
      * Every day panel will have a Day Frame
      * This is also an object which stores tasks
      */
     private DayDesign dailyCalender = new DayDesign(this);
-    private DeleteEventGUI deleteEventGUI = new DeleteEventGUI(this);
+    private DeleteEventGUI deleteEventGUI = new DeleteEventGUI(this,dailyCalender);
     private ZonedDateTime today = ZonedDateTime.now();
     private int todayDate = ZonedDateTime.now().getDayOfMonth();
     private int month = ZonedDateTime.now().getMonthValue();
 
     private JPanel mainPanel, centerPanel;
 
-    private ArrayList<DailyEvent> dailyEvents = new ArrayList<>();
+    private ArrayList<DailyEvent> dailyEvents = new ArrayList<>(1);
 
     /**
      * This method is used from the interface in order to communicate with EventGUI window
@@ -39,16 +40,22 @@ public class Day extends JFrame implements EventListener {
         updateDisplay(); // Method to update the display with the new task
     }
 
+    @Override
+    public void removeEvent(int index){
+        if(dailyEvents.isEmpty()){
+            updateDisplay();
+        }
+        dailyEvents.remove(index);
+        updateDisplay();
+    }
+
     // Method to update the display with the tasks
     // behöver en metof som kan sortera så blir det lättare när jag printar
     private void updateDisplay() {
         // remvoes current
         centerPanel.removeAll();
-        // DaydDesign newDaily = new DayDesing(this)
-        // newDaily.setEvents = tasksThisDay.
-        //JScrollPane scrollPane = new JScrollPane(dailyCalender);
-        // centerPanel.add(scrollPane, BorderLayout.WEST);
-        //
+
+        // dailyCalendar.setTasks(dailyEvents)
         JScrollPane scrollPane = new JScrollPane(dailyCalender);
         centerPanel.add(scrollPane, BorderLayout.WEST);
 
@@ -73,6 +80,7 @@ public class Day extends JFrame implements EventListener {
         // Create button for adding events
         JButton addButton = new JButton("+");
         addButton.setFont(new Font("Georgia", Font.BOLD, 20));
+        addButton.addActionListener(e -> openCreateEventFrame());
 
         // Create panel for button and set its background color
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -82,6 +90,7 @@ public class Day extends JFrame implements EventListener {
 
         // remove button
         JButton removeButton = new JButton("-");
+        removeButton.setSize(50,50);
         removeButton.setFont(new Font("Georgia", Font.BOLD, 20));
         removeButton.addActionListener(e->openRemoveFrame(this));
 
@@ -118,12 +127,7 @@ public class Day extends JFrame implements EventListener {
 
 
 
-        addButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Open a new frame or perform an action when a day is clicked
-                openCreateEventFrame();
-            }
-        });
+
 
 
 
@@ -134,24 +138,17 @@ public class Day extends JFrame implements EventListener {
      */
     public void openCreateEventFrame(){
         JFrame eventFrame = new EventGUI(this, dailyCalender);
+        //eventFrame.setAlwaysOnTop(true);
 
 
     }
 
     public void openRemoveFrame(Day day){
-        DeleteEventGUI deleteFrame = new DeleteEventGUI(this);
+        DeleteEventGUI deleteFrame = new DeleteEventGUI(this, dailyCalender);
         deleteFrame.setTasks(dailyEvents);
-
-
+        //deleteFrame.setAlwaysOnTop(true);
     }
 
-    /**
-     * Lägg till denna metod i delte gui oxlså
-     */
-    public void sort(){
-        System.out.println("sorts arrayList after LocalTime");
-
-    }
 
 
 
@@ -175,6 +172,24 @@ public class Day extends JFrame implements EventListener {
     }
 
 
+    public void sort(){
+        int i, j;
+        DailyEvent key;
+        for (i = 1; i < dailyEvents.size(); i++) {
+            key = dailyEvents.get(i);
+            j = i - 1;
+
+            // Move elements of arr[0..i-1],
+            // that are greater than key,
+            // to one position ahead of their
+            // current position
+            while (j >= 0 && dailyEvents.get(j).getStartTime().isAfter(key.getStartTime())) {
+                dailyEvents.set(j + 1,dailyEvents.get(j));
+                j = j - 1;
+            }
+            dailyEvents.set(j+1, key);
+        }
+    }
 
     public void setDate(LocalDate date){
         System.out.println("skapa variabler som kommer ihåg vilken dag och månad det är som strängar och objekt som attribut");

@@ -31,9 +31,6 @@ public class EventGUI extends JFrame {
     private JTextArea description;
     private JButton addEventButton = new JButton("Add Event");
 
-    private LocalTime userInputedTime;
-    private DailyEvent userInputedEvent;
-
     private String[] timesHH = new String[34];
     private String[] timesMM = new String[60];
 
@@ -51,6 +48,7 @@ public class EventGUI extends JFrame {
      */
     public EventGUI(EventListener day, EventListenerDraw dailyCalendar) {
 
+
         this.arrayOfNeccTextF[0] = start1;
         this.arrayOfNeccTextF[1] = start2;
         this.arrayOfNeccTextF[2] = end1;
@@ -62,16 +60,22 @@ public class EventGUI extends JFrame {
         for(int i = 0; i<24; i++){
             this.timesHH[i] = String.valueOf(i);
         }
-        for(int i = 24; i<34; i++){
-            for(int j = 0; i<1; i++){
-                for(int k = 0; j<10; j++){
-                    this.timesHH[i] = ""+j+k;
-                    i++;
-
-                }
+        String[] zeroInts = new String[10];
+        for(int i = 0; i<1; i++){
+            for(int j = 0; j<10; j++){
+                zeroInts[j] = i +""+ j;
 
             }
         }
+        for(int i=24; i<timesHH.length; i++){
+            for(int j = 0; i<zeroInts.length; j++){
+                timesHH[i] = zeroInts[j];
+                i++;
+
+            }
+
+        }
+
 
 
         for(int i = 0; i<60; i++){
@@ -191,20 +195,24 @@ public class EventGUI extends JFrame {
                  */
                 if (!titleOfEvent.getText().isEmpty() && !start1.getText().isEmpty() && !start2.getText().isEmpty() && !end1.getText().isEmpty() && !end2.getText().isEmpty()) {
                     // logic for non numbers
+                    if(legalInputHourTimes(start1.getText()) && legalInputHourTimes(end1.getText()) && legalInputMinuteTimes(start2.getText()) && legalInputMinuteTimes(end2.getText())){
 
-                    LocalTime start = getTime(getTimeString(start1,start2));
-                    LocalTime end = getTime(getTimeString(end1,end2));
+                        LocalTime start = getTime(getTimeString(start1,start2));
+                        LocalTime end = getTime(getTimeString(end1,end2));
 
-                    if (startTimeIsNotSoonerThanEnd(start, end)){
-                        addEvent(day);
+                        if (startTimeIsNotSoonerThanEnd(start, end)){
+                            addEvent(day);
+
+                        }else{
+                            JOptionPane.showMessageDialog(null, "Events cannot start sooner than they end", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                        if(start1.getText().length() > 2 || start2.getText().length() > 2 || end1.getText().length() > 2 || end2.getText().length() > 2){
+                            JOptionPane.showMessageDialog(null, "To many characters in the time field", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
 
                     }else{
-                        JOptionPane.showMessageDialog(null, "Events cannot start sooner than they end", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Time is wrongly formatted", "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                    if(start1.getText().length() > 2 || start2.getText().length() > 2 || end1.getText().length() > 2 || end2.getText().length() > 2){
-                        JOptionPane.showMessageDialog(null, "To many characters in the time field", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-
                 }else {
                     // Display error message if required fields are empty
                     JOptionPane.showMessageDialog(null, "Please fill in all required fields.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -264,9 +272,10 @@ public class EventGUI extends JFrame {
     public String getTimeString(JTextField a, JTextField b){
         if(legalInputHourTimes(a.getText()) && legalInputMinuteTimes(b.getText())){
             if(a.getText().length() == 1){
+                System.out.println("yes sir");
                 return "0"+a.getText() +":"+ b.getText();
             }
-            System.out.println("yes sir");
+
             return a.getText() +":"+b.getText();
         }
 
@@ -284,6 +293,7 @@ public class EventGUI extends JFrame {
 
 
     public boolean legalInputHourTimes(String a){
+        //mst finnas ett bättre sätt
         for(String x : timesHH){
             if(x.equals(a)){
                 return true;
@@ -293,9 +303,10 @@ public class EventGUI extends JFrame {
         return false;
     }
 
+
+
     public boolean legalInputMinuteTimes(String a){
         for(String x : timesMM){
-
             if(x.equals(a)){
                 return true;
             }
