@@ -107,20 +107,26 @@ public class CalendarP {
         calendarPanel.setBackground(new Color(230, 230, 250));
         mainFrame.add(calendarPanel, BorderLayout.WEST);
 
+
+
+        // Create buttons and add them to the button panel
+        goLeftMonth = new JButton("<");
+        goLeftMonth.addActionListener(e->oneMonthBackward());
+        goLeftMonth.setSize(40,40);
+        goRightMonth = new JButton(">");
+        goRightMonth.addActionListener(e->oneMonthForward());
+        goRightMonth.setSize(50,40);
+
+        monthLB = new JLabel(chosenMonth.getMonth().toString());
+        monthLB.setSize(300,40);
+        monthLB.setFont(new Font("Georgia", Font.BOLD, 18));
+
         /**
          * Panel for changing buttons
          */
         changeButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         changeButtonPanel.setBackground(new Color(230, 230, 250));
-        changeButtonPanel.setSize(500,45);
-
-        // Create buttons and add them to the button panel
-        goLeftMonth = new JButton("<");
-        //goLeftMonth.setSize(40,40);
-        goRightMonth = new JButton(">");
-        // goRightMonth.setSize(50,40);
-        monthLB = new JLabel(chosenMonth.getMonth().toString());
-        monthLB.setFont(new Font("Georgia", Font.BOLD, 18));
+        changeButtonPanel.setSize((goLeftMonth.getWidth() * 2) + monthLB.getWidth() + 20,45);
         changeButtonPanel.add(goLeftMonth, BorderLayout.WEST);
         changeButtonPanel.add(goRightMonth, BorderLayout.EAST);
         changeButtonPanel.add(monthLB, BorderLayout.CENTER);
@@ -132,22 +138,22 @@ public class CalendarP {
         /**
          * Action Listeners which listens to mouse click
          */
-        goLeftMonth.addMouseListener(new java.awt.event.MouseAdapter() {
+        /*goLeftMonth.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 // Open a new frame or perform an action when a day is clicked
                 oneMonthBackward();
 
 
             }
-        });
+        });*/
 
-        goRightMonth.addMouseListener(new java.awt.event.MouseAdapter() {
+        /*goRightMonth.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 // Open a new frame or perform an action when a day is clicked
                 oneMonthForward();
             }
         });
-
+*/
 
         // method that displays the calendarPanel design
         displayCalendar(LocalDate.now());
@@ -215,6 +221,20 @@ public class CalendarP {
         dayPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); //border
         dayPanel.setPreferredSize(new Dimension(100, 100)); // size
 
+        //----test-----//
+
+
+        Color eventColour = Color.BLUE;
+
+        // Desaturate the color (reduce saturation)
+        float[] hsbValues = Color.RGBtoHSB(eventColour.getRed(), eventColour.getGreen(), eventColour.getBlue(), null);
+        Color desaturatedColor = Color.getHSBColor(hsbValues[0], 0.3f, hsbValues[2]); // Adjust saturation (0.3f for less saturation)
+
+        // Set the opacity (alpha) of the color (less opaque)
+        Color lessOpaqueColor = new Color(desaturatedColor.getRed(), desaturatedColor.getGreen(), desaturatedColor.getBlue(), 150); // Alpha value (0-255)
+        dayPanel.setBackground(lessOpaqueColor);
+
+        //----test----//
         JLabel dateLabel = new JLabel(String.valueOf(date.getDayOfMonth()));
         dayPanel.add(dateLabel);
 
@@ -238,17 +258,31 @@ public class CalendarP {
         changeButtonPanel.remove(monthLB);
         monthLB = new JLabel(chosenMonth.getMonth().toString());
         monthLB.setFont(new Font("Georgia", Font.BOLD, 18));
+        monthLB.setSize(300,40);
+        changeButtonPanel.setSize((goRightMonth.getWidth() *2) + monthLB.getWidth() + 20, 45);
         changeButtonPanel.add(monthLB, BorderLayout.CENTER);
+
+        changeButtonPanel.repaint();
+        changeButtonPanel.revalidate();
 
     }
 
+    /**
+     * Lägg till så att man ser året också!!!
+     */
     private void oneMonthBackward(){
         chosenMonth = chosenMonth.plusMonths(-1);
         displayCalendar(chosenMonth.toLocalDate());
         changeButtonPanel.remove(monthLB);
         monthLB = new JLabel(chosenMonth.getMonth().toString());
         monthLB.setFont(new Font("Georgia", Font.BOLD, 18));
+        monthLB.setSize(300,40);
+        changeButtonPanel.setSize((goRightMonth.getWidth() *2) + monthLB.getWidth() + 20, 45);
         changeButtonPanel.add(monthLB, BorderLayout.CENTER);
+
+        changeButtonPanel.repaint();
+        changeButtonPanel.revalidate();
+
     }
 
     // method that actionlistener adapts, creates a new day fram
