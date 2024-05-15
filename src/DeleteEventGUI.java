@@ -16,7 +16,7 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
      */
     private EventListener eventListener;
     private EventListenerDraw dailyCalendar;
-    private LocalDate date;
+
 
     /**
      * sends copy of this map to day
@@ -48,6 +48,7 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
      *
      */
     public DeleteEventGUI(Day day) {
+
 
 
         taskFrame.setTitle("Delete events for ");
@@ -100,7 +101,8 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
     }
 
     public void updateDisplay(){
-        mainPanel.removeAll();
+        System.out.println("Hej");
+        //mainPanel.removeAll();
         mainPanel.setLayout(new GridLayout(this.eventsToday.size(),0,0,10));
         if(!eventsToday.isEmpty()){
             for(LocalTime key: eventsToday.keySet()){
@@ -127,14 +129,9 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
      */
     public void removeEvent(JButton self){
         // måste ta bort mapen nog och skapa en identifier som är
-        for(LocalTime key: eventsToday.keySet()){
-            if(eventsToday.get(key).getTitle().equals(self.getName())){
-                eventsToday.remove(key);
-                mainPanel.remove(self);
-                updateDisplay();
+        mainPanel.remove(self);
 
-            }
-        }
+        updateDisplay();
     }
 
     public void setTasks(HashMap<LocalTime, DailyEvent> a){
