@@ -149,7 +149,7 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             g2.setColor(lessOpaqueColor);
             g2.fillRect(COLUMN_WIDTH, y0Coordinate, COLUMN_WIDTH, heightOfTask);
             g2.setColor(Color.BLACK);
-            g2.drawString(a.get(key).getTitle() + " "+ startTime + "-"+ endTime, COLUMN_WIDTH + 10, y0Coordinate + 20);
+            g2.drawString(a.get(key).getTitleOfEvent() + " "+ startTime + "-"+ endTime, COLUMN_WIDTH + 10, y0Coordinate + 20);
             g2.setColor(a.get(key).getColourOfEvent()); // Set border color
             g2.drawRect(COLUMN_WIDTH, y0Coordinate, COLUMN_WIDTH, heightOfTask); // Draw border
         }
