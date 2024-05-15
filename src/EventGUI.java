@@ -23,7 +23,7 @@ public class EventGUI extends JFrame {
     /**
      * sends copy of this map to day
      */
-    private HashMap<LocalTime,DailyEvent> tasksThisDay = new HashMap<LocalTime, DailyEvent>();
+    private ArrayList<DailyEvent> dailyEventsToday = new ArrayList<>();
     private HashMap<LocalTime, DailyEvent> timeOfEvent;
     private JLabel title = new JLabel("Add Event");
     private JLabel nameOfEvent, type, start,end;
@@ -239,12 +239,12 @@ public class EventGUI extends JFrame {
          * Kan prova stram annts
          */
 
-        tasksThisDay.put(start, newEvent);
+        dailyEventsToday.add(newEvent);
         // puts the tasks in the map created in Day
         day.onEventAdded(title, type, start,end, descriptionE);
         // lägga in ävem här för daily design?
         //dailyCalendar.setEventsToday();
-        dailyCalendar.drawEvent(tasksThisDay);
+        dailyCalendar.drawEvent(dailyEventsToday);
         //removeList.addRemovableEvent(tasksThisDay);
         dispose();
 
@@ -303,9 +303,7 @@ public class EventGUI extends JFrame {
         return false;
     }
 
-    public HashMap<LocalTime, DailyEvent> getTasksThisDay(){
-        return tasksThisDay;
-    }
+
 
 
 }

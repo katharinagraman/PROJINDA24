@@ -10,47 +10,43 @@ import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class DeleteEventGUI extends JFrame implements EventListenerRemove {
+public class DeleteEventGUI extends JFrame{
     /**
      * This class handles user tasks
      */
-    private EventListener eventListener;
+    private EventListener day;
     private EventListenerDraw dailyCalendar;
 
 
     /**
      * sends copy of this map to day
      */
-    private HashMap<LocalTime,DailyEvent> eventsToday = new HashMap<LocalTime, DailyEvent>();
+    private ArrayList<DailyEvent> eventsToday = new ArrayList<>();
 
 
     private JLabel title = new JLabel("Remove Events");
+    private int removeIndex;
 
     private JPanel mainPanel;
     private ArrayList eventButtonList = new ArrayList<>();
 
+
+
     private JFrame taskFrame = new JFrame();
 
-    public void addRemovableEvent(HashMap<LocalTime, DailyEvent> a){
-        if(this.eventsToday != null){
-            if(this.eventsToday.size()>1){
-                this.eventsToday.putAll(a);
-            }
-        }else {
-            this.eventsToday = a;
+    //private EventListenerRemove day;
 
-        }
-        updateDisplay();
+    public void addRemovableEvent(HashMap<LocalTime, DailyEvent> a){
+        System.out.println("Not used");
 
     }
     /**
      * The constructor will take the day object that calls it
      *
      */
-    public DeleteEventGUI(Day day) {
-
-
-
+    public DeleteEventGUI(EventListener day, EventListenerDraw dailyCalendar) {
+        this.day = day;
+        this.dailyCalendar = dailyCalendar;
         taskFrame.setTitle("Delete events for ");
         taskFrame.setSize(500, 500);
         taskFrame.setBackground(Color.WHITE);
@@ -76,15 +72,17 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
         mainPanel.setLayout(new GridLayout(this.eventsToday.size(),1,0,10));
         mainPanel.setVisible(true);
         mainPanel.setSize(taskFrame.getWidth(), taskFrame.getHeight() - titlePanel.getHeight());
-        if(day.getTasksThisDay()==null){
+        if(day.getDailyEvents()==null){
             System.out.println("null");
         }
-        if (day.getTasksThisDay()!=null){
-            this.eventsToday = day.getTasksThisDay();
-            for(LocalTime key: eventsToday.keySet()){
-                JButton removeEventButton = new JButton(eventsToday.get(key).getTitle());
+        if (day.getDailyEvents()!=null){
+            this.eventsToday = day.getDailyEvents();
+            for(DailyEvent event: eventsToday){
+                int i = 0;
+                JButton removeEventButton = new JButton(event.toString());
                 removeEventButton.addActionListener(e->removeEvent(removeEventButton));
                 removeEventButton.setVisible(true);
+                eventButtonList.add(i,removeEventButton);
                 mainPanel.add(removeEventButton, BorderLayout.CENTER);
             }
         }
@@ -105,14 +103,16 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
         //mainPanel.removeAll();
         mainPanel.setLayout(new GridLayout(this.eventsToday.size(),0,0,10));
         if(!eventsToday.isEmpty()){
-            for(LocalTime key: eventsToday.keySet()){
-                JButton eventButton = new JButton(eventsToday.get(key).getTitle());
+            sort(eventsToday);
+            for(DailyEvent event: eventsToday){
+                JButton eventButton = new JButton(eventsToday.toString());
                 eventButton.setSize(mainPanel.getWidth(), 20);
                 eventButton.setVisible(true);
                 eventButton.addActionListener(e -> removeEvent(eventButton));
             }
 
         }
+
         mainPanel.revalidate();
         mainPanel.repaint();
     }
@@ -128,15 +128,50 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
      * @return
      */
     public void removeEvent(JButton self){
+        removeIndex = 0;
         // måste ta bort mapen nog och skapa en identifier som är
         mainPanel.remove(self);
+        for(int i = 0; i< eventsToday.size(); i++){
+            if(self.getName() == eventsToday.get(i).toString()){
+                removeIndex = i;
+                break;
+            }
+        }
+        day.removeEvent(removeIndex);
+        eventButtonList.remove(self);
 
+        //-- remove index, update list in dailyCalendar, prompt the redraw--//
+        eventsToday.remove(removeIndex);
+        dailyCalendar.removeEvent(eventsToday);   //updates dailyCalendar's list
         updateDisplay();
+
+        //mainPanel.remove(self);
+        //updateDisplay();
     }
 
-    public void setTasks(HashMap<LocalTime, DailyEvent> a){
-        eventsToday = a;
 
+    public void setTasks(ArrayList<DailyEvent> a){
+        eventsToday = a;
+    }
+
+    public void sort(ArrayList<DailyEvent> dailyEvents){
+        int i, j;
+        DailyEvent key;
+        for (i = 1; i < dailyEvents.size(); i++) {
+            key = dailyEvents.get(i);
+            j = i - 1;
+
+            // Move elements of arr[0..i-1],
+            // that are greater than key,
+            // to one position ahead of their
+            // current position
+            while (j >= 0 && dailyEvents.get(j).getStartTime().isAfter(key.getStartTime())) {
+                dailyEvents.set(j + 1,dailyEvents.get(j));
+                j = j - 1;
+            }
+            dailyEvents.set(j + 1, key);
+
+        }
     }
 
 
