@@ -12,6 +12,7 @@ public class Day extends JFrame implements EventListener {
      * This is also an object which stores tasks
      */
     private DayDesign dailyCalender = new DayDesign(this);
+    private DeleteEventGUI deleteEventGUI = new DeleteEventGUI(this);
     private ZonedDateTime today = ZonedDateTime.now();
     private int todayDate = ZonedDateTime.now().getDayOfMonth();
     private int month = ZonedDateTime.now().getMonthValue();
@@ -34,6 +35,7 @@ public class Day extends JFrame implements EventListener {
         DailyEvent event = new DailyEvent(title, type, startTime, endTime, description);
         LocalTime time = startTime;
         tasksThisDay.put(time, event);
+        deleteEventGUI.setTasks(tasksThisDay);
         updateDisplay(); // Method to update the display with the new task
     }
 
@@ -58,6 +60,7 @@ public class Day extends JFrame implements EventListener {
     // constructor
     public Day(LocalDate date) {
         super("Day: " + date);
+        deleteEventGUI.setVisible(false);
 
         // Create main panel with BorderLayout and set its background color to black
         mainPanel = new JPanel(new BorderLayout());
@@ -77,6 +80,17 @@ public class Day extends JFrame implements EventListener {
         buttonPanel.setBackground(Color.LIGHT_GRAY);
         buttonPanel.add(addButton);
 
+        // remove button
+        JButton removeButton = new JButton("-");
+        removeButton.setFont(new Font("Georgia", Font.BOLD, 20));
+        removeButton.addActionListener(e->openRemoveFrame(this));
+
+        // Create panel for button and set its background color
+        JPanel removeButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        removeButtonPanel.setSize(50,50);
+        removeButtonPanel.setBackground(Color.LIGHT_GRAY);
+        removeButtonPanel.add(removeButton);
+
         // Create a smaller panel for the content in the center
         centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBackground(Color.WHITE); // Set background color for the center panel
@@ -86,9 +100,11 @@ public class Day extends JFrame implements EventListener {
         centerPanel.add(scrollPane, BorderLayout.WEST);
 
 
+
         // Add components to main panel in appropriate positions
         mainPanel.add(dayLabel, BorderLayout.NORTH);
         mainPanel.add(buttonPanel, BorderLayout.EAST);
+        mainPanel.add(removeButtonPanel, BorderLayout.NORTH);
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
         // Set content pane of the frame to main panel
@@ -102,39 +118,12 @@ public class Day extends JFrame implements EventListener {
 
 
 
-//        //-------- Panels according to hour ------ //
-//        JPanel[] hourPanels = new JPanel[24];
-//        for(int i = 0; i<24; i++){
-//            if(i < 10){
-//                JLabel hourLabel = new JLabel("0"+ i);
-//            }
-//            JLabel hourLabel = new JLabel(String.valueOf(i));
-//            JPanel hourPanel = new JPanel();
-//            hourPanel.add(hourLabel);
-//            hourPanel.setSize(480,480);
-//            hourPanels[i] = hourPanel;
-//            centerPanel.add(hourPanel);
-//            centerPanel.add(Box.createVerticalStrut(10));
-//
-//        }
-//
-// --------- Panels according to minute -------------//
-//        JPanel[] minutesOfHours= new JPanel[12];
-//        for(int i = 0; i<12; i++){
-//            JPanel hourPanel = new JPanel();
-//            hourPanel.setSize(480,480);
-//            hourPanels[i] = hourPanel;
-//        }
-        // ---- scroll pane ---//
-
         addButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 // Open a new frame or perform an action when a day is clicked
                 openCreateEventFrame(date, tasksThisDay);
             }
         });
-
-
 
 
 
@@ -147,6 +136,13 @@ public class Day extends JFrame implements EventListener {
      */
     public void openCreateEventFrame(LocalDate date, HashMap<LocalTime, DailyEvent> eventsThisDay){
         JFrame eventFrame = new EventGUI(this, dailyCalender);
+
+
+    }
+
+    public void openRemoveFrame(Day day){
+        DeleteEventGUI deleteFrame = new DeleteEventGUI(this);
+        deleteFrame.setTasks(this.tasksThisDay);
 
 
     }

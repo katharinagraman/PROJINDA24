@@ -38,9 +38,6 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             this.eventsToday = a;
 
         }
-
-
-
         repaint(); // repaint trigger paintComnponent
     }
 
@@ -54,23 +51,8 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
 
 
     }
-    private void renderEvents(Graphics2D g2) {
-        for (DailyEvent event : eventsToday.values()) {
-            renderEvent(g2, event);
-        }
-    }
 
-    private void renderEvent(Graphics2D g2, DailyEvent event) {
-        int y0Coordinate = event.getStartTime().getHour() + event.getStartTime().getMinute() * HOUR_HEIGHT;
-        int y1Coordinate = event.getEndTime().getHour()  +  event.getEndTime().getMinute() * HOUR_HEIGHT;
-        int heightOfTask = y1Coordinate - y0Coordinate;
 
-        g2.setColor(event.getColourOfEvent());
-        g2.fillRect(COLUMN_WIDTH, y0Coordinate, COLUMN_WIDTH, heightOfTask); // Example: Draw event block at fixed position
-
-        //g2d.setColor(Color.BLACK);
-        //g2d.drawString(event.getTitle(), 110, startY + 20); // Example: Draw event title
-    }
 
 
     public DayDesign(Day day){
@@ -120,6 +102,7 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
     public void drawEventsOnTimeTable(HashMap<LocalTime, DailyEvent> a, Graphics2D g2){
         for(LocalTime key : a.keySet()){
             //LocalTime startOfDay = LocalTime.of(0,0); compareTo()
+            // gör så att användaren kna flytta på en rektangel sen men bara tvärs över
             LocalTime startTime = a.get(key).getStartTime();
             LocalTime endTime = a.get(key).getEndTime();
             System.out.println(startTime.getMinute());

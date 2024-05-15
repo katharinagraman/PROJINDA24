@@ -16,6 +16,8 @@ public class EventGUI extends JFrame {
      */
     private EventListener eventListener;
     private EventListenerDraw dailyCalendar;
+
+    private EventListenerRemove removeList;
     private LocalDate date;
 
     /**
@@ -243,6 +245,7 @@ public class EventGUI extends JFrame {
         // lägga in ävem här för daily design?
         //dailyCalendar.setEventsToday();
         dailyCalendar.drawEvent(tasksThisDay);
+        //removeList.addRemovableEvent(tasksThisDay);
         dispose();
 
 
