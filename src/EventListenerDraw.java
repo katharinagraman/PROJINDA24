@@ -7,5 +7,7 @@ public interface EventListenerDraw {
 
     void drawEvent(ArrayList<DailyEvent> a);
 
+    void removeEvent(ArrayList<DailyEvent> a);
+
 
 }

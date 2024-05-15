@@ -1,4 +1,5 @@
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 public interface EventListener {
     /**
@@ -12,4 +13,8 @@ public interface EventListener {
      * @param description
      */
     void onEventAdded(String title, String type, LocalTime startTime, LocalTime endTime, String description);
+
+    ArrayList<DailyEvent> getDailyEvents();
+
+    void removeEvent(int removeIndex);
 }

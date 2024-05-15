@@ -48,6 +48,7 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
 
     public void removeEvent(ArrayList<DailyEvent> a){
         this.eventsToday = a;
+        //repaint();
     }
 
     // painCOmoonent triggers drawGrid
@@ -56,9 +57,7 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         drawGrid(g2);
-        if(eventsToday != null){
-            drawEventsOnTimeTable(eventsToday, g2);
-        }
+
     }
 
 
@@ -96,6 +95,10 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             g2.drawLine(x, 0, x, getHeight());
         }
 
+        if(eventsToday != null){
+            drawEventsOnTimeTable(eventsToday, g2);
+        }
+
         // Example: Drawing events (you can replace this with actual event rendering logic)
         //g2.setColor(Color.BLUE);
         //g2.fillRect(COLUMN_WIDTH, intervalHeight * 2, COLUMN_WIDTH, intervalHeight* 3); // Example event block
@@ -112,7 +115,6 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             // gör så att användaren kna flytta på en rektangel sen men bara tvärs över
             LocalTime startTime = event.getStartTime();
             LocalTime endTime = event.getEndTime();
-            System.out.println(startTime.getMinute());
             int y0Coordinate = (startTime.getHour() + startTime.getMinute()) * intervalHeight * 2;
             int y1Coordinate = (endTime.getHour()  + endTime.getMinute()) * intervalHeight * 2;
             int heightOfTask;

@@ -130,13 +130,15 @@ public class DeleteEventGUI extends JFrame{
     public void removeEvent(JButton self){
         removeIndex = 0;
         // måste ta bort mapen nog och skapa en identifier som är
-        mainPanel.remove(self);
+
         for(int i = 0; i< eventsToday.size(); i++){
-            if(self.getName() == eventsToday.get(i).toString()){
+            if (self.getText().equals(eventsToday.get(i).toString())) {
                 removeIndex = i;
+                System.out.println(self.getName() + eventsToday.get(i).toString());
                 break;
             }
         }
+        mainPanel.remove(self);
         day.removeEvent(removeIndex);
         eventButtonList.remove(self);
 
