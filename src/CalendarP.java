@@ -104,7 +104,7 @@ public class CalendarP {
         // Create the calendar panel
         calendarPanel = new JPanel(new GridLayout(0,7 ));
         calendarPanel.setSize(800,400);
-        calendarPanel.setBackground(Color.GREEN);
+        calendarPanel.setBackground(new Color(230, 230, 250));
         mainFrame.add(calendarPanel, BorderLayout.WEST);
 
         /**
@@ -199,7 +199,7 @@ public class CalendarP {
         // while currentDate is still within the same date as the month of the parameter value
         while (currentDate.getMonthValue() == date.getMonthValue()) {
             JPanel dayPanel = createDayPanel(currentDate);
-            dayPanel.setBackground(Color.BLUE);
+            dayPanel.setBackground(Color.WHITE);
             calendarPanel.add(dayPanel);
             currentDate = currentDate.plusDays(1);
         }
@@ -293,11 +293,11 @@ public class CalendarP {
 
     private void printToSideMenu(HashMap<LocalTime, DailyEvent> events){
         todaysFrame = mapOfDaysWithTasks.get(today.toLocalDate());
-        HashMap<LocalTime, DailyEvent> mapforDay = todaysFrame.getTasksThisDay();
+        ArrayList<DailyEvent> dailyEvents = todaysFrame.getDailyEvents();
         String[] a = todaysFrame.arrayForHamburger();
         StringBuilder str = new StringBuilder();
 
-        for (int i = 0; i < mapforDay.size(); i++) {
+        for (int i = 0; i <dailyEvents.size(); i++) {
             str.append(a[i]).append("\n");
         }
         sideMenuPanel.removeAll();
@@ -318,8 +318,8 @@ public class CalendarP {
         sideMenuPanel.setVisible(!sideMenuPanel.isVisible());
         if(mapOfDaysWithTasks.containsKey(now)){
             todaysFrame = mapOfDaysWithTasks.get(today.toLocalDate());
-            if(!todaysFrame.getTasksThisDay().isEmpty()){
-                HashMap<LocalTime, DailyEvent> mapforDay = todaysFrame.getTasksThisDay();
+            if(!todaysFrame.getDailyEvents().isEmpty()){
+                ArrayList<DailyEvent> dailyEvents = todaysFrame.getDailyEvents();
                 String[] a = todaysFrame.arrayForHamburger();
 
                 // Simulate adding components to sideMenuPanel
@@ -327,7 +327,7 @@ public class CalendarP {
                 gbc.anchor = GridBagConstraints.NORTH;
                 gbc.insets = new Insets(5, 10, 5, 10);
 
-                for (int i = 0; i < mapforDay.size(); i++) {
+                for (int i = 0; i < dailyEvents.size(); i++) {
                     JLabel eventLabel = new JLabel(a[i]);
                     gbc.gridx = 0;
                     gbc.gridy = i;

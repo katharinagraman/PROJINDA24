@@ -86,7 +86,7 @@ public class Planner extends JFrame {
 
 
         if(todaysFrame!= null){
-            HashMap<LocalTime, DailyEvent> mapforDay = todaysFrame.getTasksThisDay();
+            //HashMap<LocalTime, DailyEvent> mapforDay = todaysFrame.getTasksThisDay();
             String[] a = todaysFrame.arrayForHamburger();
 
             // Simulate adding components to sideMenuPanel

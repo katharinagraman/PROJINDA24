@@ -21,7 +21,7 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
     /**
      * sends copy of this map to day
      */
-    private HashMap<LocalTime,DailyEvent> eventsToday = new HashMap<LocalTime, DailyEvent>();
+    private ArrayList<DailyEvent> eventsToday = new ArrayList<>();
 
 
     private JLabel title = new JLabel("Remove Events");
@@ -32,15 +32,7 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
     private JFrame taskFrame = new JFrame();
 
     public void addRemovableEvent(HashMap<LocalTime, DailyEvent> a){
-        if(this.eventsToday != null){
-            if(this.eventsToday.size()>1){
-                this.eventsToday.putAll(a);
-            }
-        }else {
-            this.eventsToday = a;
-
-        }
-        updateDisplay();
+        System.out.println("Not used");
 
     }
     /**
@@ -48,8 +40,6 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
      *
      */
     public DeleteEventGUI(Day day) {
-
-
 
         taskFrame.setTitle("Delete events for ");
         taskFrame.setSize(500, 500);
@@ -76,13 +66,13 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
         mainPanel.setLayout(new GridLayout(this.eventsToday.size(),1,0,10));
         mainPanel.setVisible(true);
         mainPanel.setSize(taskFrame.getWidth(), taskFrame.getHeight() - titlePanel.getHeight());
-        if(day.getTasksThisDay()==null){
+        if(day.getDailyEvents()==null){
             System.out.println("null");
         }
-        if (day.getTasksThisDay()!=null){
-            this.eventsToday = day.getTasksThisDay();
-            for(LocalTime key: eventsToday.keySet()){
-                JButton removeEventButton = new JButton(eventsToday.get(key).getTitle());
+        if (day.getDailyEvents()!=null){
+            this.eventsToday = day.getDailyEvents();
+            for(DailyEvent event: eventsToday){
+                JButton removeEventButton = new JButton(event.toString());
                 removeEventButton.addActionListener(e->removeEvent(removeEventButton));
                 removeEventButton.setVisible(true);
                 mainPanel.add(removeEventButton, BorderLayout.CENTER);
@@ -105,8 +95,8 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
         //mainPanel.removeAll();
         mainPanel.setLayout(new GridLayout(this.eventsToday.size(),0,0,10));
         if(!eventsToday.isEmpty()){
-            for(LocalTime key: eventsToday.keySet()){
-                JButton eventButton = new JButton(eventsToday.get(key).getTitle());
+            for(DailyEvent event: eventsToday){
+                JButton eventButton = new JButton(eventsToday.toString());
                 eventButton.setSize(mainPanel.getWidth(), 20);
                 eventButton.setVisible(true);
                 eventButton.addActionListener(e -> removeEvent(eventButton));
@@ -134,7 +124,8 @@ public class DeleteEventGUI extends JFrame implements EventListenerRemove {
         updateDisplay();
     }
 
-    public void setTasks(HashMap<LocalTime, DailyEvent> a){
+
+    public void setTasks(ArrayList<DailyEvent> a){
         eventsToday = a;
 
     }

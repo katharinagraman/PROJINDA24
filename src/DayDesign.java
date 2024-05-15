@@ -3,6 +3,7 @@ import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DayDesign extends JComponent implements Scrollable, EventListenerDraw {
@@ -23,19 +24,17 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
 
     private int intervalHeight;
 
-    private HashMap<LocalTime, DailyEvent> eventsToday;
+    private ArrayList<DailyEvent> eventsToday = new ArrayList<>();
 
     private final int numIntervals = (int) (ChronoUnit.MINUTES.between(START_TIME, END_TIME) / TIME_INTERVAL_MINUTES) + 1;
 
     private static final int HOUR_HEIGHT = 100;
 
-    public void drawEvent(HashMap<LocalTime, DailyEvent> a){
-        if(this.eventsToday != null){
-            if(this.eventsToday.size()>1){
-                this.eventsToday.putAll(a);
-            }
-        }else {
+    public void drawEvent(ArrayList<DailyEvent> a){
+        if (this.eventsToday.isEmpty()){
             this.eventsToday = a;
+        }else {
+            this.eventsToday.addAll(a);
 
         }
         repaint(); // repaint trigger paintComnponent
@@ -59,7 +58,7 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
         setPreferredSize(new Dimension(800, 24 * HOUR_HEIGHT)); // sets size
     }
 
-    public void setEventsToday(HashMap<LocalTime, DailyEvent> a){
+    public void setEventsToday(ArrayList<DailyEvent> a){
         this.eventsToday = a;
     }
 
@@ -99,12 +98,12 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
     }
 
     // triggered by drawEventsOnTimeTable
-    public void drawEventsOnTimeTable(HashMap<LocalTime, DailyEvent> a, Graphics2D g2){
-        for(LocalTime key : a.keySet()){
+    public void drawEventsOnTimeTable(ArrayList<DailyEvent> a, Graphics2D g2){
+        for(DailyEvent event: a){
             //LocalTime startOfDay = LocalTime.of(0,0); compareTo()
             // gör så att användaren kna flytta på en rektangel sen men bara tvärs över
-            LocalTime startTime = a.get(key).getStartTime();
-            LocalTime endTime = a.get(key).getEndTime();
+            LocalTime startTime = event.getStartTime();
+            LocalTime endTime = event.getEndTime();
             System.out.println(startTime.getMinute());
             int y0Coordinate = (startTime.getHour() + startTime.getMinute()) * intervalHeight * 2;
             int y1Coordinate = (endTime.getHour()  + endTime.getMinute()) * intervalHeight * 2;
@@ -119,7 +118,7 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             }
             heightOfTask = y1Coordinate - y0Coordinate;
 
-            Color eventColour = a.get(key).getColourOfEvent();
+            Color eventColour = event.getColourOfEvent();
 
             // Desaturate the color (reduce saturation)
             float[] hsbValues = Color.RGBtoHSB(eventColour.getRed(), eventColour.getGreen(), eventColour.getBlue(), null);
@@ -132,8 +131,8 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             g2.setColor(lessOpaqueColor);
             g2.fillRect(COLUMN_WIDTH, y0Coordinate, COLUMN_WIDTH, heightOfTask);
             g2.setColor(Color.BLACK);
-            g2.drawString(a.get(key).getTitle() + " "+ startTime + "-"+ endTime, COLUMN_WIDTH + 10, y0Coordinate + 20);
-            g2.setColor(a.get(key).getColourOfEvent()); // Set border color
+            g2.drawString(event.toString(), COLUMN_WIDTH + 10, y0Coordinate + 20);
+            g2.setColor(event.getColourOfEvent()); // Set border color
             g2.drawRect(COLUMN_WIDTH, y0Coordinate, COLUMN_WIDTH, heightOfTask); // Draw border
         }
 
