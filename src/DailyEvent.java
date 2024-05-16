@@ -62,6 +62,7 @@ public class DailyEvent {
             case "task" -> Color.BLUE;
             case "event" -> Color.RED;
             case "chore" -> Color.GREEN;
+            case "school" -> new Color(171, 213, 231);
             default -> Color.BLACK;
         };
 

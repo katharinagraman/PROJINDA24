@@ -30,14 +30,6 @@ public class CalendarP {
     private JFrame mainFrame;
     private JPanel calendarPanel, sideMenuPanel, changeButtonPanel;
 
-    private HashMap<LocalDate,DailyEvent> taskThatDay = new HashMap<LocalDate, DailyEvent>();
-
-    /**
-     * eller så har jag en map och en getter i varje dag istället så tasks each day blir istället en
-     * Map <Tid, Event>
-     */
-    private Map<Date, HashMap<Date,DailyEvent>> tasksEachDay = new HashMap<>();
-
     /**
      * Constructor consisting of the general design
      */
@@ -48,6 +40,7 @@ public class CalendarP {
 
         mainFrame = new JFrame("Calendar"); // main window which exits on close
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setBackground(new Color(230, 230, 250));
         mainFrame.setSize(1920, 1080);
 
 
@@ -100,7 +93,7 @@ public class CalendarP {
          * By using GridLayout I ask for 7 columns and then it can fill with necessary rows
          */
         // Create the calendar panel
-        calendarPanel = new JPanel(new GridLayout(0,7 ));
+        calendarPanel = new JPanel(new GridLayout(0,7,5,10));
         calendarPanel.setSize(800,400);
         calendarPanel.setBackground(new Color(230, 230, 250));
         mainFrame.add(calendarPanel, BorderLayout.WEST);
@@ -132,30 +125,8 @@ public class CalendarP {
         // Add button panel to the center of titlePanel
         titlePanel.add(changeButtonPanel, BorderLayout.CENTER);
 
-
-        /**
-         * Action Listeners which listens to mouse click
-         */
-        /*goLeftMonth.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Open a new frame or perform an action when a day is clicked
-                oneMonthBackward();
-
-
-            }
-        });*/
-
-        /*goRightMonth.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Open a new frame or perform an action when a day is clicked
-                oneMonthForward();
-            }
-        });
-*/
-
         // method that displays the calendarPanel design
         displayCalendar(LocalDate.now());
-
 
         mainFrame.setVisible(true);
     }

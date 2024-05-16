@@ -138,7 +138,7 @@ public class EventGUI extends JFrame {
         gbc.gridy = 1;
         mainPanel.add(type, gbc);
         gbc.gridx = 1;
-        String[] eventTypeOptions = {"Task", "Event", "Chore"};
+        String[] eventTypeOptions = {"Task", "Event", "Chore", "School"};
         typeComboBox = new JComboBox<>(eventTypeOptions);
         mainPanel.add(typeComboBox, gbc);
 
