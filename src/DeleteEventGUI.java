@@ -94,6 +94,9 @@ public class DeleteEventGUI extends JFrame{
 
             }
         }
+        mainPanel.revalidate();
+        mainPanel.repaint();
+        mainPanel.setLayout(new GridLayout(10,1,0,10));
 
 
     }
