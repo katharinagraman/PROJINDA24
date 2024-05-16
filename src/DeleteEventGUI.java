@@ -1,28 +1,18 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalTime;
 import java.util.*;
-import java.time.LocalDate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class DeleteEventGUI extends JFrame{
     /**
      * This class handles user tasks
      */
     private EventListener day;
-    private EventListenerDraw dailyCalendar;
-
 
     /**
      * sends copy of this map to day
      */
     private ArrayList<DailyEvent> eventsToday = new ArrayList<>();
-
 
     private JLabel title = new JLabel("Remove Events");
     private int removeIndex;
@@ -34,12 +24,7 @@ public class DeleteEventGUI extends JFrame{
 
     private JFrame taskFrame = new JFrame();
 
-    //private EventListenerRemove day;
 
-    public void addRemovableEvent(HashMap<LocalTime, DailyEvent> a){
-        System.out.println("Not used");
-
-    }
     /**
      * The constructor will take the day object that calls it
      *
@@ -58,8 +43,6 @@ public class DeleteEventGUI extends JFrame{
         title.setFont(new Font("Georgia", Font.BOLD, 32));
         titlePanel.add(title, BorderLayout.WEST);
 
-        // Set up button panel used for placing the button at desired postion
-        // I  find it easier
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.setBackground(new Color(230, 230, 250));
         titlePanel.add(buttonPanel, BorderLayout.EAST);
@@ -69,7 +52,7 @@ public class DeleteEventGUI extends JFrame{
 
         // Set up mainPanel with GridBagLayout
         mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(this.eventsToday.size(),1,0,10));
+        mainPanel.setLayout(new GridLayout(10,1,0,10));
         mainPanel.setVisible(true);
         mainPanel.setSize(taskFrame.getWidth(), taskFrame.getHeight() - titlePanel.getHeight());
         if(day.getDailyEvents()==null){
@@ -151,21 +134,12 @@ public class DeleteEventGUI extends JFrame{
             mainPanel.removeAll();
         }
 
-
-
-        //-- remove index, update list in dailyCalendar, prompt the redraw--//
-
-        //dailyCalendar.removeEvent(eventsToday);   //updates dailyCalendar's list
         updateDisplay();
 
-        //mainPanel.remove(self);
-        //updateDisplay();
     }
 
 
-    public void setTasks(ArrayList<DailyEvent> a){
-        eventsToday = a;
-    }
+
 
     public void sort(ArrayList<DailyEvent> dailyEvents){
         int i, j;
@@ -186,10 +160,9 @@ public class DeleteEventGUI extends JFrame{
 
         }
     }
-
-
-
-
-
+    // setters
+    public void setTasks(ArrayList<DailyEvent> a){
+        eventsToday = a;
+    }
 
 }
