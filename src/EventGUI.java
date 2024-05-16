@@ -34,10 +34,8 @@ public class EventGUI extends JFrame {
     private String[] timesHH = new String[34];
     private String[] timesMM = new String[60];
 
-
-    private JPanel titleOfEventPanel, typeOfEventPanel, startAndEndPanel, descriptionPanel;
     private JTextField titleOfEvent, typeOfEvent, start1,start2, end1, end2; // typeOfevent ska va en såndär meny man markerar
-    //default ska vara en task
+
     private JTextField[] arrayOfNeccTextF = new JTextField[4];
     private JFrame taskFrame = new JFrame();
 
@@ -138,7 +136,7 @@ public class EventGUI extends JFrame {
         gbc.gridy = 1;
         mainPanel.add(type, gbc);
         gbc.gridx = 1;
-        String[] eventTypeOptions = {"Task", "Event", "Chore"};
+        String[] eventTypeOptions = {"Task", "Event", "Chore", "School"};
         typeComboBox = new JComboBox<>(eventTypeOptions);
         mainPanel.add(typeComboBox, gbc);
 
@@ -252,7 +250,7 @@ public class EventGUI extends JFrame {
         day.onEventAdded(title, type, start,end, descriptionE);
         // lägga in ävem här för daily design?
         //dailyCalendar.setEventsToday();
-        dailyCalendar.drawEvent(dailyEventsToday);
+        //dailyCalendar.drawEvent(dailyEventsToday);
         //removeList.addRemovableEvent(tasksThisDay);
         dispose();
 
