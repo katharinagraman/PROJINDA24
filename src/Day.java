@@ -63,18 +63,10 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
 
         // funkar med paneler kan flytta ritlogiken hit också men börja med osyblig panel
 
-
-        JPanel events = new JPanel();
-        events.setBackground(Color.BLUE);
-        events.setBounds(dailyCalender.getColumnWidth(), dailyCalender.getStartCoordinate(dailyEvents.get(0).getStartTime()),dailyCalender.getColumnWidth(),500);
-        events.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Open a new frame or perform an action when a day is clicked
-                openDescription(dailyEvents.get(0).getDescription());
-            }
-        });
-        this.getCenterPanel().add(events);
-        dailyCalender.add(events);
+        drawEventsOnTimeTable(dailyEvents,dailyCalender);
+        //JPanel event = new JPanel();
+        //code
+        //dailyCalender.add(event);
 
         //----
 
@@ -84,6 +76,62 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
         centerPanel.revalidate();
         centerPanel.repaint();
     }
+
+    public void drawEventsOnTimeTable(ArrayList<DailyEvent> a, DayDesign dailyCalender){
+        for(DailyEvent event: a){
+            if(!event.isPainted()){
+                event.setPaintedTrue();
+                //LocalTime startOfDay = LocalTime.of(0,0); compareTo()
+                // gör så att användaren kna flytta på en rektangel sen men bara tvärs över
+                LocalTime startTime = event.getStartTime();
+                LocalTime endTime = event.getEndTime();
+                int y0Coordinate = startTime.getHour()  * dailyCalender.getIntervalHeight() * 2;
+                int y1Coordinate = endTime.getHour()  * dailyCalender.getIntervalHeight() * 2;
+                int heightOfTask;
+
+
+                if((startTime.getMinute() % 30)!= 0){
+                    y0Coordinate = dailyCalender.getStartCoordinate(startTime);
+                }
+                if((endTime.getMinute() % 30)!= 0){
+                    y1Coordinate = dailyCalender.getEndCoordinate(endTime);
+                }
+                if (startTime.getMinute() == 30){
+                    y0Coordinate = dailyCalender.getIntervalHeight() * ( 2 * startTime.getHour() + 1);
+                }
+
+                if (endTime.getMinute() == 30){
+                    y1Coordinate = dailyCalender.getIntervalHeight() * (2 * endTime.getHour() + 1);
+                }
+                heightOfTask = y1Coordinate - y0Coordinate;
+
+                // Set the opacity (alpha) of the color (less opaque)
+                Color lessOpaqueColor = dailyCalender.desaturate(event.getColourOfEvent());
+                //repaint(COLUMN_WIDTH,y0Coordinate,COLUMN_WIDTH,heightOfTask);
+
+                JPanel block = new CalendarBlock();
+                block.setBackground(lessOpaqueColor);
+                block.setBounds(dailyCalender.getColumnWidth(), y0Coordinate,dailyCalender.getColumnWidth(),heightOfTask);
+                block.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        // Open a new frame or perform an action when a day is clicked
+                        openDescription(event.getDescription());
+                    }
+                });
+                JLabel titleOfBlock = new JLabel(event.toString());
+                block.add(titleOfBlock);
+                dailyCalender.add(block);
+
+
+                // -----test ------ //
+            }
+
+        }
+
+    }
+
+
+
 
     public void openDescription(String desc){
         JFrame descriptionFrame = new JFrame("Description");
