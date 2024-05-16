@@ -9,13 +9,12 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class Day extends JFrame implements EventListener, EventListenerRemove {
+public class Day extends JFrame implements EventListener {
     /**
      * Every day panel will have a Day Frame
      * This is also an object which stores daily events a person puts in
      */
     private DayDesign dailyCalender = new DayDesign(this);
-
 
     private JPanel mainPanel, centerPanel, simpleView;
 

@@ -76,8 +76,8 @@ public class DeleteEventGUI extends JFrame{
             System.out.println("null");
         }
         if (day.getDailyEvents()!=null){
-            this.eventsToday = day.getDailyEvents();
-            for(DailyEvent event: eventsToday){
+           // this.eventsToday = day.getDailyEvents();
+            for(DailyEvent event: day.getDailyEvents()){
                 int i = 0;
                 JButton removeEventButton = new JButton(event.toString());
                 removeEventButton.addActionListener(e->removeEvent(removeEventButton));
@@ -98,26 +98,23 @@ public class DeleteEventGUI extends JFrame{
 
     }
 
-    public void updateDisplay(){
-        System.out.println("Hej");
+    public void updateDisplay() {
         mainPanel.removeAll();
-        eventButtonList = new ArrayList<JButton>();
-        if(!eventsToday.isEmpty()){
-            mainPanel.setLayout(new GridLayout(this.eventsToday.size(),0,0,10));
-            //sort(eventsToday);
-            for(DailyEvent event: eventsToday){
-                JButton eventButton = new JButton(eventsToday.toString());
-                eventButton.setSize(mainPanel.getWidth(), 20);
-                eventButton.setVisible(true);
-                eventButton.addActionListener(e -> removeEvent(eventButton));
-                eventButtonList.add(eventButton);
-                mainPanel.add(eventButton, BorderLayout.CENTER);
-            }
+        if (!day.getDailyEvents().isEmpty()) {
+            sort(day.getDailyEvents()); // Sort events if needed
+            mainPanel.setLayout(new GridLayout(eventsToday.size(), 1, 0, 10));
 
+            for (DailyEvent event : day.getDailyEvents()) {
+                JButton eventButton = new JButton(event.toString());
+                eventButton.addActionListener(e -> removeEvent(eventButton));
+                mainPanel.add(eventButton);
+
+            }
         }
-        mainPanel.revalidate();
-        mainPanel.repaint();
+
+
     }
+
 
 
 
@@ -133,20 +130,27 @@ public class DeleteEventGUI extends JFrame{
         removeIndex = 0;
         // måste ta bort mapen nog och skapa en identifier som är
 
-        for(int i = 0; i< eventsToday.size(); i++){
-            if (self.getText().equals(eventsToday.get(i).toString())) {
+        for(int i = 0; i< day.getDailyEvents().size(); i++){
+            if (self.getText().equals(day.getDailyEvents().get(i).toString())) {
                 removeIndex = i;
-                System.out.println(self.getName() + eventsToday.get(i).toString());
                 break;
             }
         }
-        day.removeEvent(removeIndex);
-        eventButtonList.remove(removeIndex);
-        eventsToday.remove(removeIndex);
 
-        mainPanel.remove(self);
-        //mainPanel.repaint();
-        //mainPanel.revalidate();
+        if(day.getDailyEvents().size() >1){
+            day.removeEvent(removeIndex);
+            eventButtonList.remove(removeIndex);
+            //eventsToday.remove(removeIndex);
+            mainPanel.remove(self);
+        }else if (day.getDailyEvents().size() == 1){
+            mainPanel.remove(self);
+            eventButtonList.remove(0);
+            day.removeEvent(0);
+            //eventsToday.remove(0);
+        }else{
+            mainPanel.removeAll();
+        }
+
 
 
         //-- remove index, update list in dailyCalendar, prompt the redraw--//

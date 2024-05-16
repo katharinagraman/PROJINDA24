@@ -39,6 +39,7 @@ public class CalendarP {
 
         mainFrame = new JFrame("Calendar"); // main window which exits on close
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainFrame.setBackground(new Color(230, 230, 250));
         mainFrame.setSize(1920, 1080);
 
 
@@ -81,6 +82,7 @@ public class CalendarP {
 
         // --- Calendar Panel ---//
         // Create the calendar panel
+
         calendarPanel = new JPanel(new GridLayout(0,7, 5, 10));   //asking for a grid layout with 7 columns where it fills with necessary rows
         calendarPanel.setSize(800,400);
         calendarPanel.setBackground(new Color(230, 230, 250));
@@ -112,6 +114,7 @@ public class CalendarP {
         titlePanel.add(changeButtonPanel, BorderLayout.CENTER);
 
         // method that displays the calendarPanel design
+
         displayCalendar(LocalDate.now()); //calculates layout of calendarPanel based on the first dat of the month
 
         mainFrame.setVisible(true);
