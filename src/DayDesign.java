@@ -9,26 +9,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DayDesign extends JComponent implements Scrollable, EventListenerDraw {
+public class DayDesign extends JComponent implements Scrollable {
     /**
-     * Shows the given timetable and comminucates with the Day Apllication by taking it as a parameter
-     * so gör en repaint funktion
-     *  Handles drawing logic of panels
+     * Displays a grid and times
+     * Task panels are drawn on top of it
+     * Handles logic on where to put a panel
      */
 
 
     private static final LocalTime START_TIME = LocalTime.of(0, 0);
     private static final LocalTime END_TIME = LocalTime.of(23, 0);
     private static final int TIME_INTERVAL_MINUTES = 30;
-    //private Graphics2D g2;
 
-    private static final int INTERVAL_HEIGHT = 60;
     private static final int AMOUNT_COLUMNS = 3;
     private static final int COLUMN_WIDTH = 800 / 3;
 
     private int intervalHeight;
-    // använd mapen kanske
-    private Map<DailyEvent, Rectangle> dailyEventAndBlockOnCalendar = new HashMap<>();
+    ;
 
     private ArrayList<JPanel> blockOfEvents = new ArrayList<>();
     private ArrayList<DailyEvent> eventsToday = new ArrayList<>();
@@ -37,22 +34,11 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
 
     private static final int HOUR_HEIGHT = 100;
 
-    public void drawEvent(ArrayList<DailyEvent> a){
-        if (this.eventsToday.isEmpty()){
-            this.eventsToday = a;
-        }else {
-            this.eventsToday.addAll(a);
 
-        }
-        repaint(); // repaint trigger paintComnponent
-    }
-
-    public void removeEvent(ArrayList<DailyEvent> a){
-        this.eventsToday = a;
-        this.repaint();
-    }
-
-    // painCOmoonent triggers drawGrid
+    /**
+     * Repaints component whenever repaint() is called or object initialised
+     * @param g the <code>Graphics</code> object to protect
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -61,21 +47,19 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
 
     }
 
-
-
-
+    /**
+     * Constructor sets the size
+     * @param day not used but good if adding a title
+     */
     public DayDesign(Day day){
         setPreferredSize(new Dimension(800, 24 * HOUR_HEIGHT)); // sets size
     }
 
-    public void setEventsToday(ArrayList<DailyEvent> a){
-        this.eventsToday = a;
-    }
 
-
-
-
-    // drawgrid draws grid and rectangles
+    /**
+     * Draws a grid
+     * @param g2 graphics2d object
+     */
     public void drawGrid(Graphics2D g2) {
         intervalHeight = getHeight() / numIntervals;
 
@@ -96,72 +80,14 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             g2.drawLine(x, 0, x, getHeight());
         }
 
-        /*if(eventsToday != null){
-            drawEventsOnTimeTable(eventsToday, g2);
-        }*/
-
-        // Example: Drawing events (you can replace this with actual event rendering logic)
-        //g2.setColor(Color.BLUE);
-        //g2.fillRect(COLUMN_WIDTH, intervalHeight * 2, COLUMN_WIDTH, intervalHeight* 3); // Example event block
-        //g2.setColor(Color.GREEN);
-        //g2.fillRect(COLUMN_WIDTH, intervalHeight *14, COLUMN_WIDTH, intervalHeight*(16-14));
-
-
     }
 
-    // triggered by drawEventsOnTimeTable
-    public void drawEventsOnTimeTable(ArrayList<DailyEvent> a, Graphics2D g2){
-        for(DailyEvent event: a){
-            //LocalTime startOfDay = LocalTime.of(0,0); compareTo()
-            // gör så att användaren kna flytta på en rektangel sen men bara tvärs över
-            LocalTime startTime = event.getStartTime();
-            LocalTime endTime = event.getEndTime();
-            int y0Coordinate = startTime.getHour()  * intervalHeight * 2;
-            int y1Coordinate = endTime.getHour()  * intervalHeight * 2;
-            int heightOfTask;
-
-
-            if((startTime.getMinute() % 30)!= 0){
-                y0Coordinate = getStartCoordinate(startTime);
-            }
-            if((endTime.getMinute() % 30)!= 0){
-                y1Coordinate = getEndCoordinate(endTime);
-            }
-            if (startTime.getMinute() == 30){
-                y0Coordinate = intervalHeight * ( 2 * startTime.getHour() + 1);
-            }
-
-            if (endTime.getMinute() == 30){
-                y1Coordinate = intervalHeight * (2 * endTime.getHour() + 1);
-            }
-            heightOfTask = y1Coordinate - y0Coordinate;
-
-            // Set the opacity (alpha) of the color (less opaque)
-            Color lessOpaqueColor = desaturate(event.getColourOfEvent());
-            //repaint(COLUMN_WIDTH,y0Coordinate,COLUMN_WIDTH,heightOfTask);
-            g2.setColor(lessOpaqueColor);
-            g2.fillRect(COLUMN_WIDTH, y0Coordinate, COLUMN_WIDTH, heightOfTask);
-            g2.setColor(Color.BLACK);
-            g2.drawString(event.toString(), COLUMN_WIDTH + 10, y0Coordinate + 20);
-            g2.setColor(event.getColourOfEvent()); // Set border color
-            g2.drawRect(COLUMN_WIDTH, y0Coordinate, COLUMN_WIDTH, heightOfTask); // Draw border
-
-            // -----test ------- //
-            JPanel block = new JPanel();
-            JLabel lb = new JLabel("WASSUP");
-            block.setBounds(COLUMN_WIDTH,y0Coordinate,COLUMN_WIDTH,heightOfTask);
-            block.setBackground(Color.BLACK);
-            block.add(lb);
-
-
-
-            // -----test ------ //
-        }
-
-    }
-
+    /**
+     * Desaturates color
+     * @param color from event
+     * @return desaturated color
+     */
     public Color desaturate(Color color){
-
         // Desaturate the color (reduce saturation)
         float[] hsbValues = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
         Color desaturatedColor = Color.getHSBColor(hsbValues[0], 0.3f, hsbValues[2]); // Adjust saturation (0.3f for less saturation)
@@ -172,11 +98,12 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
 
     }
 
-
-
-
-
-
+    /**
+     * Calculates start coordinate for minutes that have a rest that is not 0 for
+     * Mod 30
+     * @param start
+     * @return
+     */
     public int getStartCoordinate(LocalTime start){
         if(start.getMinute() >0 && start.getMinute() < 30){
             int subHeight = (intervalHeight / 30) * (start.getMinute());
@@ -197,6 +124,7 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
         return  (intervalHeight * ( 2 * end.getHour() + 1)) +  subHeight;
     }
 
+    // Getters
 
     public int getColumnWidth(){
         return COLUMN_WIDTH;

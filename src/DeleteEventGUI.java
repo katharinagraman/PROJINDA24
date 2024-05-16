@@ -44,9 +44,9 @@ public class DeleteEventGUI extends JFrame{
      * The constructor will take the day object that calls it
      *
      */
-    public DeleteEventGUI(EventListener day, EventListenerDraw dailyCalendar) {
+    public DeleteEventGUI(EventListener day) {
         this.day = day;
-        this.dailyCalendar = dailyCalendar;
+
         taskFrame.setTitle("Delete events for ");
         taskFrame.setSize(500, 500);
         taskFrame.setBackground(Color.WHITE);
@@ -108,6 +108,7 @@ public class DeleteEventGUI extends JFrame{
                 JButton eventButton = new JButton(event.toString());
                 eventButton.addActionListener(e -> removeEvent(eventButton));
                 mainPanel.add(eventButton);
+
             }
         }
 
@@ -135,6 +136,7 @@ public class DeleteEventGUI extends JFrame{
                 break;
             }
         }
+
         if(day.getDailyEvents().size() >1){
             day.removeEvent(removeIndex);
             eventButtonList.remove(removeIndex);
@@ -148,6 +150,7 @@ public class DeleteEventGUI extends JFrame{
         }else{
             mainPanel.removeAll();
         }
+
 
 
         //-- remove index, update list in dailyCalendar, prompt the redraw--//

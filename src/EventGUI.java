@@ -34,10 +34,8 @@ public class EventGUI extends JFrame {
     private String[] timesHH = new String[34];
     private String[] timesMM = new String[60];
 
-
-    private JPanel titleOfEventPanel, typeOfEventPanel, startAndEndPanel, descriptionPanel;
     private JTextField titleOfEvent, typeOfEvent, start1,start2, end1, end2; // typeOfevent ska va en såndär meny man markerar
-    //default ska vara en task
+
     private JTextField[] arrayOfNeccTextF = new JTextField[4];
     private JFrame taskFrame = new JFrame();
 
@@ -46,7 +44,7 @@ public class EventGUI extends JFrame {
      * The constructor will take the day object that calls it
      * @param day Day object that calls it
      */
-    public EventGUI(EventListener day, EventListenerDraw dailyCalendar) {
+    public EventGUI(EventListener day) {
 
 
         this.arrayOfNeccTextF[0] = start1;
@@ -252,12 +250,13 @@ public class EventGUI extends JFrame {
         day.onEventAdded(title, type, start,end, descriptionE);
         // lägga in ävem här för daily design?
         //dailyCalendar.setEventsToday();
-        dailyCalendar.drawEvent(dailyEventsToday);
+        //dailyCalendar.drawEvent(dailyEventsToday);
         //removeList.addRemovableEvent(tasksThisDay);
         dispose();
 
 
     }
+
 
     public boolean startTimeIsNotSoonerThanEnd(LocalTime start, LocalTime end){
         if(start.isBefore(end)){
