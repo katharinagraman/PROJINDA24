@@ -2,22 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalTime;
 import java.util.*;
 import java.time.LocalDate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 public class EventGUI extends JFrame {
     /**
      * This class handles user tasks
      */
     private EventListener eventListener;
-    private EventListenerDraw dailyCalendar;
-
-    private EventListenerRemove removeList;
     private LocalDate date;
 
     /**
@@ -34,7 +29,7 @@ public class EventGUI extends JFrame {
     private String[] timesHH = new String[34];
     private String[] timesMM = new String[60];
 
-    private JTextField titleOfEvent, typeOfEvent, start1,start2, end1, end2; // typeOfevent ska va en såndär meny man markerar
+    private JTextField titleOfEvent, start1,start2, end1, end2; // typeOfevent ska va en såndär meny man markerar
 
     private JTextField[] arrayOfNeccTextF = new JTextField[4];
     private JFrame taskFrame = new JFrame();
@@ -58,23 +53,17 @@ public class EventGUI extends JFrame {
         for(int i = 0; i<24; i++){
             this.timesHH[i] = String.valueOf(i);
         }
-        String[] zeroInts = new String[10];
-        for(int i = 0; i<1; i++){
-            for(int j = 0; j<10; j++){
-                zeroInts[j] = i +""+ j;
-
-            }
-        }
+        int b = 0;
         for(int i=24; i<timesHH.length; i++){
-            for(int j = 0; i<zeroInts.length; j++){
-                timesHH[i] = zeroInts[j];
-                i++;
+            int a = 0;
 
-            }
+            timesHH[i] = String.valueOf(a) + b;
+            b++;
 
         }
-
-
+        for (String x: timesHH){
+            System.out.print(x + " ");
+        }
 
         for(int i = 0; i<60; i++){
             for(int j = 0; j<6; j++){
@@ -87,7 +76,7 @@ public class EventGUI extends JFrame {
         }
 
         this.eventListener = day;
-        this.dailyCalendar = dailyCalendar;
+
 
         // Initialise Labels
         nameOfEvent = new JLabel("Event Name:");
