@@ -38,6 +38,10 @@ public class Day extends JFrame implements EventListener {
         updateDisplay(); // Method to update the display with the new task
     }
 
+    /**
+     * Event Listener, removes a specified index from daily events
+     * @param index
+     */
     @Override
     public void removeEvent(int index){
         if(dailyEvents.isEmpty()){
@@ -97,7 +101,23 @@ public class Day extends JFrame implements EventListener {
         JScrollPane scrollPane = new JScrollPane(dailyCalender);
         centerPanel.add(scrollPane, BorderLayout.WEST);
 
+        simpleView = new JPanel();
+        simpleView.setSize(centerPanel.getWidth() - dailyCalender.getWidth() - 50, centerPanel.getHeight());
+        simpleView.setBackground(Color.WHITE);
+        simpleView.setVisible(false);
+
+        JButton simpleButton = new JButton("Simple");
+        simpleButton.addActionListener(e -> addSimplifiedView());
+        JPanel simplePanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        simplePanel.setSize(50,50);
+        simplePanel.setBackground(Color.WHITE);
+        simplePanel.add(simpleButton);
+        centerPanel.add(simpleView, BorderLayout.EAST);
+
+
+
         // Add components to main panel in appropriate positions
+        mainPanel.add(simplePanel, BorderLayout.SOUTH);
         mainPanel.add(dayLabel, BorderLayout.NORTH);
         mainPanel.add(buttonPanel, BorderLayout.EAST);
         mainPanel.add(removeButtonPanel, BorderLayout.NORTH);
@@ -120,22 +140,11 @@ public class Day extends JFrame implements EventListener {
         // removes current
         centerPanel.removeAll();
 
-        // dailyCalendar.setTasks(dailyEvents)
         JScrollPane scrollPane = new JScrollPane(dailyCalender);
         System.out.println("BREDD " + dailyCalender.getWidth());
 
         centerPanel.add(scrollPane, BorderLayout.WEST);
-
-        // funkar med paneler kan flytta ritlogiken hit också men börja med osyblig panel
-
         drawEventsOnTimeTable(dailyEvents,dailyCalender);
-        //JPanel event = new JPanel();
-        //code
-        //dailyCalender.add(event);
-
-        //----
-
-
 
         // Repaint the panel to reflect the changes
         centerPanel.revalidate();
@@ -151,8 +160,7 @@ public class Day extends JFrame implements EventListener {
         for(DailyEvent event: a){
             if(!event.isPainted()){
                 event.setPaintedTrue();
-                //LocalTime startOfDay = LocalTime.of(0,0); compareTo()
-                // gör så att användaren kna flytta på en rektangel sen men bara tvärs över
+
                 LocalTime startTime = event.getStartTime();
                 LocalTime endTime = event.getEndTime();
                 int y0Coordinate = startTime.getHour()  * dailyCalender.getIntervalHeight() * 2;
@@ -257,9 +265,10 @@ public class Day extends JFrame implements EventListener {
     public void addSimplifiedView(){
         simpleView.setVisible(!simpleView.isVisible());
         simpleView.removeAll();
-        simpleView.setLayout(new GridLayout(dailyEvents.size(),0,0,10));
-        sort(dailyEvents);
-        for(DailyEvent event : dailyEvents){
+        simpleView.setLayout(new GridLayout(15,0,0,10));
+        ArrayList<DailyEvent> a = dailyEvents;
+        sort(a);
+        for(DailyEvent event : a){
             JPanel eventP = new JPanel();
             eventP.setBackground(dailyCalender.desaturate(event.getColourOfEvent()));
             JLabel title = new JLabel(event.toString());
@@ -267,6 +276,8 @@ public class Day extends JFrame implements EventListener {
             simpleView.add(eventP);
         }
         centerPanel.add(simpleView, BorderLayout.EAST);
+        centerPanel.revalidate();
+        centerPanel.repaint();
     }
 
     public void sort(ArrayList<DailyEvent> a){
@@ -276,10 +287,6 @@ public class Day extends JFrame implements EventListener {
             key = a.get(i);
             j = i - 1;
 
-            // Move elements of arr[0..i-1],
-            // that are greater than key,
-            // to one position ahead of their
-            // current position
             while (j >= 0 && a.get(j).getStartTime().isAfter(key.getStartTime())) {
                 a.set(j + 1,a.get(j));
                 j = j - 1;
