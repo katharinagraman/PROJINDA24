@@ -15,9 +15,9 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
      * This is also an object which stores daily events a person puts in
      */
     private DayDesign dailyCalender = new DayDesign(this);
-    private DeleteEventGUI deleteEventGUI = new DeleteEventGUI(this,dailyCalender);
 
-    private JPanel mainPanel, centerPanel, descriptionPanel;
+
+    private JPanel mainPanel, centerPanel, simpleView;
 
     private ArrayList<DailyEvent> dailyEvents = new ArrayList<>(1);
 
@@ -239,7 +239,7 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
      * Opens the Window which handles event-making
      */
     public void openCreateEventFrame(){
-        JFrame eventFrame = new EventGUI(this, dailyCalender);
+        JFrame eventFrame = new EventGUI(this);
         //eventFrame.setAlwaysOnTop(true);
 
 
@@ -250,40 +250,42 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
      * @param day
      */
     public void openRemoveFrame(Day day){
-        DeleteEventGUI deleteFrame = new DeleteEventGUI(this, dailyCalender);
+        DeleteEventGUI deleteFrame = new DeleteEventGUI(this);
         deleteFrame.setTasks(dailyEvents);
 
     }
 
     public void addSimplifiedView(){
-        JPanel simpleView = new JPanel();
-        simpleView.setSize(400,centerPanel.getHeight());
+        simpleView.setVisible(!simpleView.isVisible());
+        simpleView.removeAll();
         simpleView.setLayout(new GridLayout(dailyEvents.size(),0,0,10));
-        dailyEvents.sort();
+        sort(dailyEvents);
         for(DailyEvent event : dailyEvents){
             JPanel eventP = new JPanel();
             eventP.setBackground(dailyCalender.desaturate(event.getColourOfEvent()));
-            JLabel title = new JLabel(event.toString())
-
+            JLabel title = new JLabel(event.toString());
+            eventP.add(title);
+            simpleView.add(eventP);
         }
+        centerPanel.add(simpleView, BorderLayout.EAST);
     }
 
-    public void sort(){
+    public void sort(ArrayList<DailyEvent> a){
         int i, j;
         DailyEvent key;
-        for (i = 1; i < dailyEvents.size(); i++) {
-            key = dailyEvents.get(i);
+        for (i = 1; i < a.size(); i++) {
+            key = a.get(i);
             j = i - 1;
 
             // Move elements of arr[0..i-1],
             // that are greater than key,
             // to one position ahead of their
             // current position
-            while (j >= 0 && dailyEvents.get(j).getStartTime().isAfter(key.getStartTime())) {
-                dailyEvents.set(j + 1,dailyEvents.get(j));
+            while (j >= 0 && a.get(j).getStartTime().isAfter(key.getStartTime())) {
+                a.set(j + 1,a.get(j));
                 j = j - 1;
             }
-            dailyEvents.set(j+1, key);
+            a.set(j+1, key);
         }
     }
 

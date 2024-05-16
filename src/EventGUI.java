@@ -44,7 +44,7 @@ public class EventGUI extends JFrame {
      * The constructor will take the day object that calls it
      * @param day Day object that calls it
      */
-    public EventGUI(EventListener day, EventListenerDraw dailyCalendar) {
+    public EventGUI(EventListener day) {
 
 
         this.arrayOfNeccTextF[0] = start1;

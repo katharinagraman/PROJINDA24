@@ -44,9 +44,9 @@ public class DeleteEventGUI extends JFrame{
      * The constructor will take the day object that calls it
      *
      */
-    public DeleteEventGUI(EventListener day, EventListenerDraw dailyCalendar) {
+    public DeleteEventGUI(EventListener day) {
         this.day = day;
-        this.dailyCalendar = dailyCalendar;
+
         taskFrame.setTitle("Delete events for ");
         taskFrame.setSize(500, 500);
         taskFrame.setBackground(Color.WHITE);
