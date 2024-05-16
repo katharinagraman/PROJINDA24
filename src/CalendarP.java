@@ -16,7 +16,7 @@ public class CalendarP {
     private ZonedDateTime today, chosenMonth;
     private Day dayFrame, todaysFrame;
     private JButton goLeftMonth, goRightMonth, hamburgerButton;
-    private JLabel month, year;
+
     /**
      * Map with days that contains events
      * Local Date is the identifier
@@ -44,8 +44,6 @@ public class CalendarP {
 
 
         //---- Hamburger menu -------------------------------------------///
-
-
         sideMenuPanel = new JPanel();   // Create sidemenu panel (initially hidden)
         sideMenuPanel.setBackground(Color.WHITE);
         sideMenuPanel.setPreferredSize(new Dimension(300, mainFrame.getHeight())); // Adjust width as needed
@@ -120,11 +118,9 @@ public class CalendarP {
         mainFrame.setVisible(true);
     }
 
-
     /**
-     * This method takes the given date as a parameter
-     * When I started I used LocalDate but now I am unsure which is the best suited
-     * @param date
+     * Displays calendar
+     * @param date used to determine first day of month and then creating a calendar
      */
     private void displayCalendar(LocalDate date) {
         // Clear existing calendar panel
@@ -133,8 +129,7 @@ public class CalendarP {
         // creates an object that is the first day of the same month as the date parameter
         LocalDate firstDayOfMonth = date.withDayOfMonth(1);
 
-        // Determine the day of the week for the first day of the month (e.g., Monday = 1, Tuesday = 2, ..., Sunday = 7)
-        // returns the integer value of the first day of the mont so monday is 1 etc
+        // get value representing which day the first day of the month is
         int startDayOfWeek = firstDayOfMonth.getDayOfWeek().getValue();
 
         // Add empty labels for days before the first day of the month
@@ -158,7 +153,11 @@ public class CalendarP {
         calendarPanel.repaint();
     }
 
-    // Creates a day panel
+    /**
+     * Creates a day panel and assigns an action listener to it
+     * @param date to determine what date
+     * @return
+     */
     private JPanel createDayPanel(LocalDate date) {
         JPanel dayPanel = new JPanel();
         dayPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); //border
@@ -215,7 +214,7 @@ public class CalendarP {
     /**
      * Opens a new frame which is a Day-class object
      * Object is stored in map in the container
-     * @param date
+     * @param date unique for each day
      */
     private void openDayFrame(LocalDate date) {
         if (!mapOfDaysWithTasks.containsKey(date)) {
@@ -233,6 +232,9 @@ public class CalendarP {
 
     }
 
+    /**
+     * Toggles side menu and prints today's tasks on it.
+     */
     private void toggleSideMenu() {
         sideMenuPanel.removeAll();
         LocalDate now = LocalDate.now();
@@ -240,28 +242,26 @@ public class CalendarP {
         if(mapOfDaysWithTasks.containsKey(now)){
             todaysFrame = mapOfDaysWithTasks.get(today.toLocalDate());
             if(!todaysFrame.getDailyEvents().isEmpty()){
+                sideMenuPanel.setLayout(new GridLayout(15,1,0,10));
                 ArrayList<DailyEvent> dailyEvents = todaysFrame.getDailyEvents();
-                String[] a = todaysFrame.arrayForHamburger();
-
-                // Simulate adding components to sideMenuPanel
-                GridBagConstraints gbc = new GridBagConstraints();
-                gbc.anchor = GridBagConstraints.NORTH;
-                gbc.insets = new Insets(5, 10, 5, 10);
 
                 for (int i = 0; i < dailyEvents.size(); i++) {
-                    JLabel eventLabel = new JLabel(a[i]);
-                    gbc.gridx = 0;
-                    gbc.gridy = i;
-                    sideMenuPanel.add(eventLabel, gbc);
+                    JPanel event = new JPanel();
+                    event.setBackground(desaturate(dailyEvents.get(i).getColourOfEvent()));
+                    event.setSize(sideMenuPanel.getWidth(),30);
+                    JLabel name = new JLabel(dailyEvents.get(i).toString());
+                    event.add(name);
+                    sideMenuPanel.add(event);
+
                 }
 
             }else{
                 JLabel noTasksToday = new JLabel("No Tasks Today :)");
-                sideMenuPanel.add(noTasksToday);
+                sideMenuPanel.add(noTasksToday, BorderLayout.NORTH);
             }
         }else{
             JLabel noTasksToday = new JLabel("No Tasks Today :)");
-            sideMenuPanel.add(noTasksToday);
+            sideMenuPanel.add(noTasksToday, BorderLayout.NORTH);
 
         }
         sideMenuPanel.revalidate();
@@ -270,6 +270,17 @@ public class CalendarP {
 
         mainFrame.revalidate(); // Recalculate layout
         mainFrame.repaint();    // Redraw components
+    }
+
+    public Color desaturate(Color color){
+        // Desaturate the color (reduce saturation)
+        float[] hsbValues = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+        Color desaturatedColor = Color.getHSBColor(hsbValues[0], 0.3f, hsbValues[2]); // Adjust saturation (0.3f for less saturation)
+
+        // Set the opacity (alpha) of the color (less opaque)
+        Color lessOpaqueColor = new Color(desaturatedColor.getRed(), desaturatedColor.getGreen(), desaturatedColor.getBlue(), 150); // Alpha value (0-255)
+        return lessOpaqueColor;
+
     }
 
     // Getters
