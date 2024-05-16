@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -46,6 +48,8 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
             updateDisplay();
         }
         dailyEvents.remove(index);
+        dailyCalender.remove(dailyCalender.getBlockOfEvents().get(index));  // remove panel from dailyCalendar
+        dailyCalender.getBlockOfEvents().remove(index);
         updateDisplay();
     }
 
@@ -109,18 +113,19 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
                 Color lessOpaqueColor = dailyCalender.desaturate(event.getColourOfEvent());
                 //repaint(COLUMN_WIDTH,y0Coordinate,COLUMN_WIDTH,heightOfTask);
 
-                JPanel block = new CalendarBlock();
+                JPanel block = new JPanel();
                 block.setBackground(lessOpaqueColor);
                 block.setBounds(dailyCalender.getColumnWidth(), y0Coordinate,dailyCalender.getColumnWidth(),heightOfTask);
                 block.addMouseListener(new java.awt.event.MouseAdapter() {
                     public void mouseClicked(java.awt.event.MouseEvent evt) {
                         // Open a new frame or perform an action when a day is clicked
-                        openDescription(event.getDescription());
+                        openDescription(event);
                     }
                 });
                 JLabel titleOfBlock = new JLabel(event.toString());
                 block.add(titleOfBlock);
                 dailyCalender.add(block);
+                dailyCalender.getBlockOfEvents().add(block);
 
 
                 // -----test ------ //
@@ -133,15 +138,29 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
 
 
 
-    public void openDescription(String desc){
+    public void openDescription(DailyEvent event){
         JFrame descriptionFrame = new JFrame("Description");
         descriptionFrame.setSize(500,500);
         descriptionFrame.toFront();
-        JTextArea descriptionArea = new JTextArea(desc);
+        JTextArea descriptionArea = new JTextArea(event.getDescription());
         descriptionFrame.add(descriptionArea, BorderLayout.CENTER);
         descriptionFrame.setVisible(true);
         descriptionFrame.toFront();
         descriptionFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        // Add window listener to save text when frame is closed
+        descriptionFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Get the text from JTextArea
+                String updatedDescription = descriptionArea.getText();
+                // Update the event's description with the edited text
+                event.setDescription(updatedDescription);
+                // Perform any other necessary actions here (e.g., save to database)
+                // Print to console for demonstration
+                System.out.println("Description updated: " + updatedDescription);
+            }
+        });
 
 
     }

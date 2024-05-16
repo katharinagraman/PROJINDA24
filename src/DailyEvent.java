@@ -12,6 +12,8 @@ public class DailyEvent {
     private LocalTime startTime, endTime;
     private int month, day, year;
 
+    private boolean isPainted = false;
+
 
     /**
      * User will input a title of their event
@@ -52,6 +54,9 @@ public class DailyEvent {
         return endTime;
     }
 
+    public String getDescription(){
+        return description;
+    }
     public Color getColourOfEvent(){
         return switch (this.type) {
             case "task" -> Color.BLUE;
@@ -60,6 +65,18 @@ public class DailyEvent {
             default -> Color.BLACK;
         };
 
+    }
+
+    public void setPaintedTrue(){
+        isPainted = true;
+    }
+
+    public void setDescription(String s){
+        description = s;
+    }
+
+    public boolean isPainted(){
+        return isPainted;
     }
 
 
