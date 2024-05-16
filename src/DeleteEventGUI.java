@@ -101,14 +101,16 @@ public class DeleteEventGUI extends JFrame{
     public void updateDisplay(){
         System.out.println("Hej");
         mainPanel.removeAll();
+        eventButtonList = new ArrayList<JButton>();
         if(!eventsToday.isEmpty()){
             mainPanel.setLayout(new GridLayout(this.eventsToday.size(),0,0,10));
-            sort(eventsToday);
+            //sort(eventsToday);
             for(DailyEvent event: eventsToday){
                 JButton eventButton = new JButton(eventsToday.toString());
                 eventButton.setSize(mainPanel.getWidth(), 20);
                 eventButton.setVisible(true);
                 eventButton.addActionListener(e -> removeEvent(eventButton));
+                eventButtonList.add(eventButton);
                 mainPanel.add(eventButton, BorderLayout.CENTER);
             }
 
@@ -143,8 +145,8 @@ public class DeleteEventGUI extends JFrame{
         eventsToday.remove(removeIndex);
 
         mainPanel.remove(self);
-        mainPanel.repaint();
-        mainPanel.revalidate();
+        //mainPanel.repaint();
+        //mainPanel.revalidate();
 
 
         //-- remove index, update list in dailyCalendar, prompt the redraw--//
