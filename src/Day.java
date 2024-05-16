@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,7 +20,7 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
     private int todayDate = ZonedDateTime.now().getDayOfMonth();
     private int month = ZonedDateTime.now().getMonthValue();
 
-    private JPanel mainPanel, centerPanel;
+    private JPanel mainPanel, centerPanel, descriptionPanel;
 
     private ArrayList<DailyEvent> dailyEvents = new ArrayList<>(1);
 
@@ -46,6 +48,8 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
             updateDisplay();
         }
         dailyEvents.remove(index);
+        dailyCalender.remove(dailyCalender.getBlockOfEvents().get(index));  // remove panel from dailyCalendar
+        dailyCalender.getBlockOfEvents().remove(index);
         updateDisplay();
     }
 
@@ -57,17 +61,115 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
 
         // dailyCalendar.setTasks(dailyEvents)
         JScrollPane scrollPane = new JScrollPane(dailyCalender);
+        System.out.println("BREDD " + dailyCalender.getWidth());
+
         centerPanel.add(scrollPane, BorderLayout.WEST);
+
+        // funkar med paneler kan flytta ritlogiken hit också men börja med osyblig panel
+
+        drawEventsOnTimeTable(dailyEvents,dailyCalender);
+        //JPanel event = new JPanel();
+        //code
+        //dailyCalender.add(event);
+
+        //----
+
+
 
         // Repaint the panel to reflect the changes
         centerPanel.revalidate();
         centerPanel.repaint();
     }
 
+    public void drawEventsOnTimeTable(ArrayList<DailyEvent> a, DayDesign dailyCalender){
+        for(DailyEvent event: a){
+            if(!event.isPainted()){
+                event.setPaintedTrue();
+                //LocalTime startOfDay = LocalTime.of(0,0); compareTo()
+                // gör så att användaren kna flytta på en rektangel sen men bara tvärs över
+                LocalTime startTime = event.getStartTime();
+                LocalTime endTime = event.getEndTime();
+                int y0Coordinate = startTime.getHour()  * dailyCalender.getIntervalHeight() * 2;
+                int y1Coordinate = endTime.getHour()  * dailyCalender.getIntervalHeight() * 2;
+                int heightOfTask;
+
+
+                if((startTime.getMinute() % 30)!= 0){
+                    y0Coordinate = dailyCalender.getStartCoordinate(startTime);
+                }
+                if((endTime.getMinute() % 30)!= 0){
+                    y1Coordinate = dailyCalender.getEndCoordinate(endTime);
+                }
+                if (startTime.getMinute() == 30){
+                    y0Coordinate = dailyCalender.getIntervalHeight() * ( 2 * startTime.getHour() + 1);
+                }
+
+                if (endTime.getMinute() == 30){
+                    y1Coordinate = dailyCalender.getIntervalHeight() * (2 * endTime.getHour() + 1);
+                }
+                heightOfTask = y1Coordinate - y0Coordinate;
+
+                // Set the opacity (alpha) of the color (less opaque)
+                Color lessOpaqueColor = dailyCalender.desaturate(event.getColourOfEvent());
+                //repaint(COLUMN_WIDTH,y0Coordinate,COLUMN_WIDTH,heightOfTask);
+
+                JPanel block = new JPanel();
+                block.setBackground(lessOpaqueColor);
+                block.setBounds(dailyCalender.getColumnWidth(), y0Coordinate,dailyCalender.getColumnWidth(),heightOfTask);
+                block.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        // Open a new frame or perform an action when a day is clicked
+                        openDescription(event);
+                    }
+                });
+                JLabel titleOfBlock = new JLabel(event.toString());
+                block.add(titleOfBlock);
+                dailyCalender.add(block);
+                dailyCalender.getBlockOfEvents().add(block);
+
+
+                // -----test ------ //
+            }
+
+        }
+
+    }
+
+
+
+
+    public void openDescription(DailyEvent event){
+        JFrame descriptionFrame = new JFrame("Description");
+        descriptionFrame.setSize(500,500);
+        descriptionFrame.toFront();
+        JTextArea descriptionArea = new JTextArea(event.getDescription());
+        descriptionFrame.add(descriptionArea, BorderLayout.CENTER);
+        descriptionFrame.setVisible(true);
+        descriptionFrame.toFront();
+        descriptionFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        // Add window listener to save text when frame is closed
+        descriptionFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                // Get the text from JTextArea
+                String updatedDescription = descriptionArea.getText();
+                // Update the event's description with the edited text
+                event.setDescription(updatedDescription);
+                // Perform any other necessary actions here (e.g., save to database)
+                // Print to console for demonstration
+                System.out.println("Description updated: " + updatedDescription);
+            }
+        });
+
+
+    }
+
     // constructor
     public Day(LocalDate date) {
         super("Day: " + date);
         deleteEventGUI.setVisible(false);
+
 
         // Create main panel with BorderLayout and set its background color to black
         mainPanel = new JPanel(new BorderLayout());
@@ -146,7 +248,7 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
     public void openRemoveFrame(Day day){
         DeleteEventGUI deleteFrame = new DeleteEventGUI(this, dailyCalender);
         deleteFrame.setTasks(dailyEvents);
-        //deleteFrame.setAlwaysOnTop(true);
+
     }
 
 
@@ -193,6 +295,11 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
 
     public void setDate(LocalDate date){
         System.out.println("skapa variabler som kommer ihåg vilken dag och månad det är som strängar och objekt som attribut");
+    }
+
+
+    public void addPanels(){
+
     }
 
 

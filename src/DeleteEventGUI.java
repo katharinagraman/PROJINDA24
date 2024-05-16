@@ -100,19 +100,19 @@ public class DeleteEventGUI extends JFrame{
 
     public void updateDisplay(){
         System.out.println("Hej");
-        //mainPanel.removeAll();
-        mainPanel.setLayout(new GridLayout(this.eventsToday.size(),0,0,10));
+        mainPanel.removeAll();
         if(!eventsToday.isEmpty()){
+            mainPanel.setLayout(new GridLayout(this.eventsToday.size(),0,0,10));
             sort(eventsToday);
             for(DailyEvent event: eventsToday){
                 JButton eventButton = new JButton(eventsToday.toString());
                 eventButton.setSize(mainPanel.getWidth(), 20);
                 eventButton.setVisible(true);
                 eventButton.addActionListener(e -> removeEvent(eventButton));
+                mainPanel.add(eventButton, BorderLayout.CENTER);
             }
 
         }
-
         mainPanel.revalidate();
         mainPanel.repaint();
     }
@@ -138,13 +138,18 @@ public class DeleteEventGUI extends JFrame{
                 break;
             }
         }
-        mainPanel.remove(self);
         day.removeEvent(removeIndex);
-        eventButtonList.remove(self);
+        eventButtonList.remove(removeIndex);
+        eventsToday.remove(removeIndex);
+
+        mainPanel.remove(self);
+        mainPanel.repaint();
+        mainPanel.revalidate();
+
 
         //-- remove index, update list in dailyCalendar, prompt the redraw--//
-        eventsToday.remove(removeIndex);
-        dailyCalendar.removeEvent(eventsToday);   //updates dailyCalendar's list
+
+        //dailyCalendar.removeEvent(eventsToday);   //updates dailyCalendar's list
         updateDisplay();
 
         //mainPanel.remove(self);
