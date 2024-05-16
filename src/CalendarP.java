@@ -10,20 +10,18 @@ import java.util.Map;
 
 public class CalendarP {
     /**
-     * Main programme where the Calendar Application is ran
+     * Main programme where the Calendar Application is run
      */
 
-
     private ZonedDateTime today, chosenMonth;
-
     private Day dayFrame, todaysFrame;
     private JButton goLeftMonth, goRightMonth, hamburgerButton;
-
     private JLabel month, year;
     /**
      * Map with days that contains events
      * Local Date is the identifier
      */
+
     private HashMap<LocalDate, Day> mapOfDaysWithTasks = new HashMap<>();
     private JLabel title = new JLabel("My Planner");
 
@@ -323,26 +321,6 @@ public class CalendarP {
 
     public HashMap<LocalDate, Day> getMapOfDaysWithTasks(){
         return mapOfDaysWithTasks;
-    }
-
-    private void printToSideMenu(HashMap<LocalTime, DailyEvent> events){
-        todaysFrame = mapOfDaysWithTasks.get(today.toLocalDate());
-        ArrayList<DailyEvent> dailyEvents = todaysFrame.getDailyEvents();
-        String[] a = todaysFrame.arrayForHamburger();
-        StringBuilder str = new StringBuilder();
-
-        for (int i = 0; i <dailyEvents.size(); i++) {
-            str.append(a[i]).append("\n");
-        }
-        sideMenuPanel.removeAll();
-        JTextArea textAreaForSideMenu = new JTextArea(300, mainFrame.getHeight());
-        textAreaForSideMenu.append(str.toString());
-        sideMenuPanel.add(textAreaForSideMenu);
-        sideMenuPanel.revalidate();
-        sideMenuPanel.repaint();
-        mainFrame.revalidate();
-        mainFrame.repaint();
-
     }
 
 

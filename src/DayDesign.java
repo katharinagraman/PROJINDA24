@@ -13,6 +13,7 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
     /**
      * Shows the given timetable and comminucates with the Day Apllication by taking it as a parameter
      * so gör en repaint funktion
+     *  Handles drawing logic of panels
      */
 
 
@@ -29,7 +30,7 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
     // använd mapen kanske
     private Map<DailyEvent, Rectangle> dailyEventAndBlockOnCalendar = new HashMap<>();
 
-    private ArrayList<Rectangle2D> blockOfEvents = new ArrayList<>();
+    private ArrayList<JPanel> blockOfEvents = new ArrayList<>();
     private ArrayList<DailyEvent> eventsToday = new ArrayList<>();
 
     private final int numIntervals = (int) (ChronoUnit.MINUTES.between(START_TIME, END_TIME) / TIME_INTERVAL_MINUTES) + 1;
@@ -48,7 +49,7 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
 
     public void removeEvent(ArrayList<DailyEvent> a){
         this.eventsToday = a;
-        //repaint();
+        this.repaint();
     }
 
     // painCOmoonent triggers drawGrid
@@ -95,9 +96,9 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             g2.drawLine(x, 0, x, getHeight());
         }
 
-        if(eventsToday != null){
+        /*if(eventsToday != null){
             drawEventsOnTimeTable(eventsToday, g2);
-        }
+        }*/
 
         // Example: Drawing events (you can replace this with actual event rendering logic)
         //g2.setColor(Color.BLUE);
@@ -135,16 +136,8 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             }
             heightOfTask = y1Coordinate - y0Coordinate;
 
-
-            Color eventColour = event.getColourOfEvent();
-
-            // Desaturate the color (reduce saturation)
-            float[] hsbValues = Color.RGBtoHSB(eventColour.getRed(), eventColour.getGreen(), eventColour.getBlue(), null);
-            Color desaturatedColor = Color.getHSBColor(hsbValues[0], 0.3f, hsbValues[2]); // Adjust saturation (0.3f for less saturation)
-
             // Set the opacity (alpha) of the color (less opaque)
-            Color lessOpaqueColor = new Color(desaturatedColor.getRed(), desaturatedColor.getGreen(), desaturatedColor.getBlue(), 150); // Alpha value (0-255)
-
+            Color lessOpaqueColor = desaturate(event.getColourOfEvent());
             //repaint(COLUMN_WIDTH,y0Coordinate,COLUMN_WIDTH,heightOfTask);
             g2.setColor(lessOpaqueColor);
             g2.fillRect(COLUMN_WIDTH, y0Coordinate, COLUMN_WIDTH, heightOfTask);
@@ -156,10 +149,9 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
             // -----test ------- //
             JPanel block = new JPanel();
             JLabel lb = new JLabel("WASSUP");
-            block.setBounds(COLUMN_WIDTH,y0Coordinate + 50,COLUMN_WIDTH,heightOfTask);
-            block.setBackground(lessOpaqueColor);
+            block.setBounds(COLUMN_WIDTH,y0Coordinate,COLUMN_WIDTH,heightOfTask);
+            block.setBackground(Color.BLACK);
             block.add(lb);
-
 
 
 
@@ -167,6 +159,23 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
         }
 
     }
+
+    public Color desaturate(Color color){
+
+        // Desaturate the color (reduce saturation)
+        float[] hsbValues = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+        Color desaturatedColor = Color.getHSBColor(hsbValues[0], 0.3f, hsbValues[2]); // Adjust saturation (0.3f for less saturation)
+
+        // Set the opacity (alpha) of the color (less opaque)
+        Color lessOpaqueColor = new Color(desaturatedColor.getRed(), desaturatedColor.getGreen(), desaturatedColor.getBlue(), 150); // Alpha value (0-255)
+        return lessOpaqueColor;
+
+    }
+
+
+
+
+
 
     public int getStartCoordinate(LocalTime start){
         if(start.getMinute() >0 && start.getMinute() < 30){
@@ -188,6 +197,18 @@ public class DayDesign extends JComponent implements Scrollable, EventListenerDr
         return  (intervalHeight * ( 2 * end.getHour() + 1)) +  subHeight;
     }
 
+
+    public int getColumnWidth(){
+        return COLUMN_WIDTH;
+    }
+
+    public int getIntervalHeight(){
+        return intervalHeight;
+    }
+
+    public ArrayList<JPanel> getBlockOfEvents(){
+        return blockOfEvents;
+    }
 
     // ---- override for scrollable ------ //
 
