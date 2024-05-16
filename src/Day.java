@@ -18,7 +18,7 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
     private int todayDate = ZonedDateTime.now().getDayOfMonth();
     private int month = ZonedDateTime.now().getMonthValue();
 
-    private JPanel mainPanel, centerPanel;
+    private JPanel mainPanel, centerPanel, descriptionPanel;
 
     private ArrayList<DailyEvent> dailyEvents = new ArrayList<>(1);
 
@@ -57,11 +57,45 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
 
         // dailyCalendar.setTasks(dailyEvents)
         JScrollPane scrollPane = new JScrollPane(dailyCalender);
+        System.out.println("BREDD " + dailyCalender.getWidth());
+
         centerPanel.add(scrollPane, BorderLayout.WEST);
+
+        // funkar med paneler kan flytta ritlogiken hit också men börja med osyblig panel
+
+
+        JPanel events = new JPanel();
+        events.setBackground(Color.BLUE);
+        events.setBounds(dailyCalender.getColumnWidth(), dailyCalender.getStartCoordinate(dailyEvents.get(0).getStartTime()),dailyCalender.getColumnWidth(),500);
+        events.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                // Open a new frame or perform an action when a day is clicked
+                openDescription(dailyEvents.get(0).getDescription());
+            }
+        });
+        this.getCenterPanel().add(events);
+        dailyCalender.add(events);
+
+        //----
+
+
 
         // Repaint the panel to reflect the changes
         centerPanel.revalidate();
         centerPanel.repaint();
+    }
+
+    public void openDescription(String desc){
+        JFrame descriptionFrame = new JFrame("Description");
+        descriptionFrame.setSize(500,500);
+        descriptionFrame.toFront();
+        JTextArea descriptionArea = new JTextArea(desc);
+        descriptionFrame.add(descriptionArea, BorderLayout.CENTER);
+        descriptionFrame.setVisible(true);
+        descriptionFrame.toFront();
+        descriptionFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+
     }
 
     // constructor
@@ -193,6 +227,11 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
 
     public void setDate(LocalDate date){
         System.out.println("skapa variabler som kommer ihåg vilken dag och månad det är som strängar och objekt som attribut");
+    }
+
+
+    public void addPanels(){
+
     }
 
 
