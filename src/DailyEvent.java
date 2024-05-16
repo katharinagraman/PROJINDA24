@@ -3,14 +3,13 @@ import java.time.LocalTime;
 
 public class DailyEvent {
     /**
-     * Class keeping track of daily events
-     * Each event has an identifier important for other feautures
+     * Class that is a representation of a daily event
+     * Each event has an identifier important for other features
      */
 
     private String type;
     private String titleOfEvent, description;
     private LocalTime startTime, endTime;
-    private int month, day, year;
 
     private boolean isPainted = false;
 
@@ -33,6 +32,7 @@ public class DailyEvent {
 
     }
 
+    // Getters
     public String getTitle(){
         return titleOfEvent;
     }
@@ -62,10 +62,16 @@ public class DailyEvent {
             case "task" -> Color.BLUE;
             case "event" -> Color.RED;
             case "chore" -> Color.GREEN;
+            case "school" -> new Color(151, 229, 255);
             default -> Color.BLACK;
         };
 
     }
+    public boolean isPainted(){
+        return isPainted;
+    }
+
+    // Setters
 
     public void setPaintedTrue(){
         isPainted = true;
@@ -75,11 +81,11 @@ public class DailyEvent {
         description = s;
     }
 
-    public boolean isPainted(){
-        return isPainted;
-    }
 
-
+    /**
+     * ToString method
+     * @return name star time - end time
+     */
     @Override
     public String toString(){
         return titleOfEvent + " " + startTime+ " - "+ endTime;

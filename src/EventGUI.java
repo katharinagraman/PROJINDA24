@@ -257,6 +257,7 @@ public class EventGUI extends JFrame {
 
     }
 
+
     public boolean startTimeIsNotSoonerThanEnd(LocalTime start, LocalTime end){
         if(start.isBefore(end)){
             return true;

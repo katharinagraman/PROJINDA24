@@ -255,6 +255,39 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
 
     }
 
+    public void addSimplifiedView(){
+        JPanel simpleView = new JPanel();
+        simpleView.setSize(400,centerPanel.getHeight());
+        simpleView.setLayout(new GridLayout(dailyEvents.size(),0,0,10));
+        dailyEvents.sort();
+        for(DailyEvent event : dailyEvents){
+            JPanel eventP = new JPanel();
+            eventP.setBackground(dailyCalender.desaturate(event.getColourOfEvent()));
+            JLabel title = new JLabel(event.toString())
+
+        }
+    }
+
+    public void sort(){
+        int i, j;
+        DailyEvent key;
+        for (i = 1; i < dailyEvents.size(); i++) {
+            key = dailyEvents.get(i);
+            j = i - 1;
+
+            // Move elements of arr[0..i-1],
+            // that are greater than key,
+            // to one position ahead of their
+            // current position
+            while (j >= 0 && dailyEvents.get(j).getStartTime().isAfter(key.getStartTime())) {
+                dailyEvents.set(j + 1,dailyEvents.get(j));
+                j = j - 1;
+            }
+            dailyEvents.set(j+1, key);
+        }
+    }
+
+
     /**
      * Returns an array with the daily events to home frame
      * @return
