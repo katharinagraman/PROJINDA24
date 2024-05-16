@@ -1,25 +1,26 @@
 import javax.swing.*;
 import java.awt.*;
+import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class Day extends JFrame implements EventListener {
+public class Day extends JFrame implements EventListener, EventListenerRemove {
     /**
      * Every day panel will have a Day Frame
      * This is also an object which stores tasks
      */
     private DayDesign dailyCalender = new DayDesign(this);
-    private DeleteEventGUI deleteEventGUI = new DeleteEventGUI(this);
+    private DeleteEventGUI deleteEventGUI = new DeleteEventGUI(this,dailyCalender);
     private ZonedDateTime today = ZonedDateTime.now();
     private int todayDate = ZonedDateTime.now().getDayOfMonth();
     private int month = ZonedDateTime.now().getMonthValue();
 
     private JPanel mainPanel, centerPanel;
 
-    private HashMap<LocalTime,DailyEvent> tasksThisDay = new HashMap<>();
+    private ArrayList<DailyEvent> dailyEvents = new ArrayList<>(1);
 
     /**
      * This method is used from the interface in order to communicate with EventGUI window
@@ -33,10 +34,19 @@ public class Day extends JFrame implements EventListener {
     public void onEventAdded(String title, String type, LocalTime startTime, LocalTime endTime, String description) {
         // Create a new DailyEvent instance with the received data
         DailyEvent event = new DailyEvent(title, type, startTime, endTime, description);
-        LocalTime time = startTime;
-        tasksThisDay.put(time, event);
-        deleteEventGUI.setTasks(tasksThisDay);
+        dailyEvents.add(event);
+        deleteEventGUI.setTasks(dailyEvents);
+
         updateDisplay(); // Method to update the display with the new task
+    }
+
+    @Override
+    public void removeEvent(int index){
+        if(dailyEvents.isEmpty()){
+            updateDisplay();
+        }
+        dailyEvents.remove(index);
+        updateDisplay();
     }
 
     // Method to update the display with the tasks
@@ -44,11 +54,8 @@ public class Day extends JFrame implements EventListener {
     private void updateDisplay() {
         // remvoes current
         centerPanel.removeAll();
-        // DaydDesign newDaily = new DayDesing(this)
-        // newDaily.setEvents = tasksThisDay.
-        //JScrollPane scrollPane = new JScrollPane(dailyCalender);
-        // centerPanel.add(scrollPane, BorderLayout.WEST);
-        //
+
+        // dailyCalendar.setTasks(dailyEvents)
         JScrollPane scrollPane = new JScrollPane(dailyCalender);
         centerPanel.add(scrollPane, BorderLayout.WEST);
 
@@ -73,6 +80,7 @@ public class Day extends JFrame implements EventListener {
         // Create button for adding events
         JButton addButton = new JButton("+");
         addButton.setFont(new Font("Georgia", Font.BOLD, 20));
+        addButton.addActionListener(e -> openCreateEventFrame());
 
         // Create panel for button and set its background color
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -82,6 +90,7 @@ public class Day extends JFrame implements EventListener {
 
         // remove button
         JButton removeButton = new JButton("-");
+        removeButton.setSize(50,50);
         removeButton.setFont(new Font("Georgia", Font.BOLD, 20));
         removeButton.addActionListener(e->openRemoveFrame(this));
 
@@ -118,12 +127,7 @@ public class Day extends JFrame implements EventListener {
 
 
 
-        addButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                // Open a new frame or perform an action when a day is clicked
-                openCreateEventFrame(date, tasksThisDay);
-            }
-        });
+
 
 
 
@@ -131,104 +135,36 @@ public class Day extends JFrame implements EventListener {
 
     /**
      * Opens the Window which handles eventmaking
-     * @param date
-     * @param eventsThisDay
      */
-    public void openCreateEventFrame(LocalDate date, HashMap<LocalTime, DailyEvent> eventsThisDay){
+    public void openCreateEventFrame(){
         JFrame eventFrame = new EventGUI(this, dailyCalender);
+        //eventFrame.setAlwaysOnTop(true);
 
 
     }
 
     public void openRemoveFrame(Day day){
-        DeleteEventGUI deleteFrame = new DeleteEventGUI(this);
-        deleteFrame.setTasks(this.tasksThisDay);
-
-
-    }
-
-    public void sort(){
-        HashMap<LocalTime, DailyEvent> sortedMap = new HashMap<>();
-        Set<LocalTime> keys = tasksThisDay.keySet();
-        LocalTime[] times = new LocalTime[tasksThisDay.size()];
-        for(int i = 0; i<tasksThisDay.size(); i++){
-            for (LocalTime key : tasksThisDay.keySet()) {
-                times[i] = key;
-                i++;
-            }
-        }
-
-        int n = times.length;
-        for (int i = 1; i < n; ++i) {
-            LocalTime key = times[i];
-            int j = i - 1;
-
-            /* Move elements of arr[0..i-1], that are
-               greater than key, to one position ahead
-               of their current position */
-            while (j >= 0 && (times[j].compareTo(key) > 0)) {
-                times[j + 1] = times[j];
-                j = j - 1;
-            }
-            times[j + 1] = key;
-        }
-        for(int i = 0; i<tasksThisDay.size();i++){
-            sortedMap.put(times[i], tasksThisDay.get(times[i]));
-            System.out.println(sortedMap.entrySet());
-        }
-        tasksThisDay = sortedMap;
+        DeleteEventGUI deleteFrame = new DeleteEventGUI(this, dailyCalender);
+        deleteFrame.setTasks(dailyEvents);
+        //deleteFrame.setAlwaysOnTop(true);
     }
 
 
 
 
-    /**
-     * Får typ skapa fält som representerar en tid
-     * @param a
-     */
-    public void addDailyEvent(HashMap<LocalTime, DailyEvent> a){
-        GridBagConstraints gbc = new GridBagConstraints();
-        // egentligen kan ju bara säga att time y = timmen, så tex 13:00 motsvarar att timey = 13:15!!
-        int timex = 0;
-        int timey = 0;
-        int eventx = 1;
-        int eventy = 0;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH.mm");
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.insets = new Insets(5, 10, 5, 10);
 
-        for (LocalTime key : a.keySet()) {
-            gbc.gridx = timex;
-            gbc.gridy = timey;
-            JLabel timeLabel = new JLabel(key.format(formatter));
 
-            mainPanel.add(timeLabel, gbc);
-            gbc.gridx = eventx;
-            JLabel event = new JLabel(a.get(key).toString(), 20);
-            mainPanel.add(event, gbc);
-            timey++;
-            gbc.gridx = 0;
-            gbc.gridy = timey;
-
-        }
-
-    }
 
     public String[] arrayForHamburger(){
-        String[] a = new String[tasksThisDay.size()];
+        String[] a = new String[dailyEvents.size()];
         for(int i= 0; i<a.length;i++){
-            for (LocalTime key : tasksThisDay.keySet()) {
-                a[i] = key+ " " + tasksThisDay.get(key).toString();
-                i++;
-            }
-
+            a[i] = dailyEvents.get(i).toString();
         }
-
         return a;
     }
 
-    public HashMap<LocalTime, DailyEvent> getTasksThisDay(){
-        return tasksThisDay;
+    public ArrayList<DailyEvent> getDailyEvents(){
+        return dailyEvents;
     }
 
     public JPanel getCenterPanel(){
@@ -236,9 +172,23 @@ public class Day extends JFrame implements EventListener {
     }
 
 
-    public String getDate(){
-        return "";
+    public void sort(){
+        int i, j;
+        DailyEvent key;
+        for (i = 1; i < dailyEvents.size(); i++) {
+            key = dailyEvents.get(i);
+            j = i - 1;
 
+            // Move elements of arr[0..i-1],
+            // that are greater than key,
+            // to one position ahead of their
+            // current position
+            while (j >= 0 && dailyEvents.get(j).getStartTime().isAfter(key.getStartTime())) {
+                dailyEvents.set(j + 1,dailyEvents.get(j));
+                j = j - 1;
+            }
+            dailyEvents.set(j+1, key);
+        }
     }
 
     public void setDate(LocalDate date){

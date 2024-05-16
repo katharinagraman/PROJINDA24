@@ -43,10 +43,6 @@ public class DailyEvent {
      * Returns the name the event user has chosen
      * @return titleOfEvent
      */
-    private String getTitleOfEvent(){
-        return titleOfEvent;
-
-    }
 
     public LocalTime getStartTime(){
         return startTime;
@@ -69,7 +65,7 @@ public class DailyEvent {
 
     @Override
     public String toString(){
-        return titleOfEvent;
+        return titleOfEvent + " " + startTime+ " - "+ endTime;
 
     }
 }
