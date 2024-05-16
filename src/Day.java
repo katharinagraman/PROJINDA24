@@ -170,6 +170,7 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
         super("Day: " + date);
         deleteEventGUI.setVisible(false);
 
+
         // Create main panel with BorderLayout and set its background color to black
         mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.LIGHT_GRAY);
@@ -247,7 +248,7 @@ public class Day extends JFrame implements EventListener, EventListenerRemove {
     public void openRemoveFrame(Day day){
         DeleteEventGUI deleteFrame = new DeleteEventGUI(this, dailyCalender);
         deleteFrame.setTasks(dailyEvents);
-        //deleteFrame.setAlwaysOnTop(true);
+
     }
 
 
